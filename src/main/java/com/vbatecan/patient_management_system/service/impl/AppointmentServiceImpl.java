@@ -9,17 +9,17 @@ import com.vbatecan.patient_management_system.repository.AppointmentRepository;
 import com.vbatecan.patient_management_system.repository.DoctorRepository;
 import com.vbatecan.patient_management_system.repository.PatientRepository;
 import com.vbatecan.patient_management_system.service.AppointmentService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor // Replaced explicit constructor with Lombok annotation
+@RequiredArgsConstructor
 public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
@@ -35,7 +35,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         if (appointmentDTO.getStatus() != null) {
             appointment.setStatus(appointmentDTO.getStatus());
         }
-        // If DTO status is null, the entity's default status "SCHEDULED" will be used.
         Appointment savedAppointment = appointmentRepository.save(appointment);
         return convertToDTO(savedAppointment);
     }
@@ -46,30 +45,24 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentDTO> findAll() {
-        return appointmentRepository.findAll().stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+    public Page<AppointmentDTO> findAll(Pageable pageable) {
+        return appointmentRepository.findAll(pageable).map(this::convertToDTO);
     }
 
     @Override
-    public List<AppointmentDTO> findByPatientId(Integer patientId) {
+    public Page<AppointmentDTO> findByPatientId(Integer patientId, Pageable pageable) {
         if (!patientRepository.existsById(patientId)) {
             throw new ResourceNotFoundException("Patient not found with id: " + patientId);
         }
-        return appointmentRepository.findByPatientId(patientId).stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+        return appointmentRepository.findByPatientId(patientId, pageable).map(this::convertToDTO);
     }
 
     @Override
-    public List<AppointmentDTO> findByDoctorId(Integer doctorId) {
+    public Page<AppointmentDTO> findByDoctorId(Integer doctorId, Pageable pageable) {
         if (!doctorRepository.existsById(doctorId)) {
             throw new ResourceNotFoundException("Doctor not found with id: " + doctorId);
         }
-        return appointmentRepository.findByDoctorId(doctorId).stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+        return appointmentRepository.findByDoctorId(doctorId, pageable).map(this::convertToDTO);
     }
 
     @Override

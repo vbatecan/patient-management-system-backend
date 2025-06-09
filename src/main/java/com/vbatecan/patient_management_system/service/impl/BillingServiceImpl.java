@@ -10,13 +10,13 @@ import com.vbatecan.patient_management_system.repository.BillingRepository;
 import com.vbatecan.patient_management_system.repository.PatientRepository;
 import com.vbatecan.patient_management_system.service.BillingService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +35,6 @@ public class BillingServiceImpl implements BillingService {
         if (billingDTO.getStatus() != null) {
             billing.setStatus(billingDTO.getStatus());
         }
-        // If DTO status is null, the entity's default status "PENDING" will be used.
         Billing savedBilling = billingRepository.save(billing);
         return convertToDTO(savedBilling);
     }
@@ -46,30 +45,24 @@ public class BillingServiceImpl implements BillingService {
     }
 
     @Override
-    public List<BillingDTO> findAll() {
-        return billingRepository.findAll().stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+    public Page<BillingDTO> findAll(Pageable pageable) {
+        return billingRepository.findAll(pageable).map(this::convertToDTO);
     }
 
     @Override
-    public List<BillingDTO> findByPatientId(Integer patientId) {
+    public Page<BillingDTO> findByPatientId(Integer patientId, Pageable pageable) {
         if (!patientRepository.existsById(patientId)) {
             throw new ResourceNotFoundException("Patient not found with id: " + patientId);
         }
-        return billingRepository.findByPatientId(patientId).stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+        return billingRepository.findByPatientId(patientId, pageable).map(this::convertToDTO);
     }
 
     @Override
-    public List<BillingDTO> findByAppointmentId(Integer appointmentId) {
+    public Page<BillingDTO> findByAppointmentId(Integer appointmentId, Pageable pageable) {
          if (!appointmentRepository.existsById(appointmentId)) {
             throw new ResourceNotFoundException("Appointment not found with id: " + appointmentId);
         }
-        return billingRepository.findByAppointmentId(appointmentId).stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+        return billingRepository.findByAppointmentId(appointmentId, pageable).map(this::convertToDTO);
     }
 
     @Override

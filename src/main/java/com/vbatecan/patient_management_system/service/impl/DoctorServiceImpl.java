@@ -8,13 +8,13 @@ import com.vbatecan.patient_management_system.repository.DoctorRepository;
 import com.vbatecan.patient_management_system.repository.UserAccountRepository;
 import com.vbatecan.patient_management_system.service.DoctorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -59,10 +59,8 @@ public class DoctorServiceImpl implements DoctorService {
 
 
     @Override
-    public List<DoctorDTO> findAll() {
-        return doctorRepository.findAll().stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+    public Page<DoctorDTO> findAll(Pageable pageable) {
+        return doctorRepository.findAll(pageable).map(this::convertToDTO);
     }
 
     @Override
@@ -100,7 +98,6 @@ public class DoctorServiceImpl implements DoctorService {
         if (!doctorRepository.existsById(id)) {
             throw new ResourceNotFoundException("Doctor not found with id: " + id);
         }
-        // Consider implications: what happens to appointments linked to this doctor?
         doctorRepository.deleteById(id);
     }
 
