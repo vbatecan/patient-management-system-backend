@@ -6,9 +6,9 @@ import java.util.Optional;
 
 public interface MedicalRecordService {
     MedicalRecordDTO save(MedicalRecordDTO medicalRecordDTO);
-    Optional<MedicalRecordDTO> findById(Integer id); // Renamed from getMedicalRecordById
-    List<MedicalRecordDTO> findAll(); // Renamed from getAllMedicalRecords
-    List<MedicalRecordDTO> findByPatientId(Integer patientId); // Renamed from getMedicalRecordsByPatientId
+    Optional<MedicalRecordDTO> findById(Integer id);
+    List<MedicalRecordDTO> findAll();
+    List<MedicalRecordDTO> findByPatientId(Integer patientId);
     MedicalRecordDTO update(Integer id, MedicalRecordDTO medicalRecordDTO);
     void delete(Integer id);
 }

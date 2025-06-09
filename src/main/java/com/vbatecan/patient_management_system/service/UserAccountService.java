@@ -6,10 +6,10 @@ import java.util.Optional;
 
 public interface UserAccountService {
     UserAccountDTO save(UserAccountDTO userAccountDTO);
-    Optional<UserAccountDTO> findById(Integer id); // Renamed from getUserAccountById
-    Optional<UserAccountDTO> findByUsername(String username); // Renamed from getUserAccountByUsername
-    List<UserAccountDTO> findAll(); // Renamed from getAllUserAccounts
+    Optional<UserAccountDTO> findById(Integer id);
+    Optional<UserAccountDTO> findByUsername(String username);
+    List<UserAccountDTO> findAll();
     UserAccountDTO update(Integer id, UserAccountDTO userAccountDTO);
-    // updatePassword method might be separate and more secure
+    // A separate, more secure method for password updates might be considered.
     void delete(Integer id);
 }

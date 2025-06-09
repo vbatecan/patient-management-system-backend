@@ -34,19 +34,19 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     }
 
     @Override
-    public Optional<PrescriptionDTO> findById(Integer id) { // Renamed from getPrescriptionById
+    public Optional<PrescriptionDTO> findById(Integer id) {
         return prescriptionRepository.findById(id).map(this::convertToDTO);
     }
 
     @Override
-    public List<PrescriptionDTO> findAll() { // Renamed from getAllPrescriptions
+    public List<PrescriptionDTO> findAll() {
         return prescriptionRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<PrescriptionDTO> findByAppointmentId(Integer appointmentId) { // Renamed from getPrescriptionsByAppointmentId
+    public List<PrescriptionDTO> findByAppointmentId(Integer appointmentId) {
         if (!appointmentRepository.existsById(appointmentId)) {
             throw new ResourceNotFoundException("Appointment not found with id: " + appointmentId);
         }

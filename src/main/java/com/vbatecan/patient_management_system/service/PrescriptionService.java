@@ -6,9 +6,9 @@ import java.util.Optional;
 
 public interface PrescriptionService {
     PrescriptionDTO save(PrescriptionDTO prescriptionDTO);
-    Optional<PrescriptionDTO> findById(Integer id); // Renamed from getPrescriptionById
-    List<PrescriptionDTO> findAll(); // Renamed from getAllPrescriptions
-    List<PrescriptionDTO> findByAppointmentId(Integer appointmentId); // Renamed from getPrescriptionsByAppointmentId
+    Optional<PrescriptionDTO> findById(Integer id);
+    List<PrescriptionDTO> findAll();
+    List<PrescriptionDTO> findByAppointmentId(Integer appointmentId);
     PrescriptionDTO update(Integer id, PrescriptionDTO prescriptionDTO);
     void delete(Integer id);
 }

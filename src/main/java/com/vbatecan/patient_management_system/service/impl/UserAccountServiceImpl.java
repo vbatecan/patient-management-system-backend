@@ -6,7 +6,7 @@ import com.vbatecan.patient_management_system.model.UserAccount;
 import com.vbatecan.patient_management_system.repository.UserAccountRepository;
 import com.vbatecan.patient_management_system.service.UserAccountService;
 import lombok.RequiredArgsConstructor;
-// import org.springframework.security.crypto.password.PasswordEncoder; // For password hashing, if you implement it
+// import org.springframework.security.crypto.password.PasswordEncoder; // For password hashing
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,13 +20,12 @@ import java.util.stream.Collectors;
 public class UserAccountServiceImpl implements UserAccountService {
 
     private final UserAccountRepository userAccountRepository;
-    // private final PasswordEncoder passwordEncoder; // Inject for password hashing
+    // private final PasswordEncoder passwordEncoder; // TODO: Inject for password hashing
 
     @Override
     @Transactional
     public UserAccountDTO save(UserAccountDTO userAccountDTO) {
-        // Validate username uniqueness at service level before attempting to save,
-        // even if there's a DB constraint, to provide a clearer error message.
+        // Validate username uniqueness at service level before attempting to save
         if (userAccountRepository.findByUsername(userAccountDTO.getUsername()).isPresent()) {
             throw new IllegalArgumentException("Username already exists: " + userAccountDTO.getUsername());
         }
@@ -40,27 +39,24 @@ public class UserAccountServiceImpl implements UserAccountService {
         if (userAccountDTO.getRole() != null) {
             userAccount.setRole(userAccountDTO.getRole());
         }
-        // If DTO role is null, the entity's default role (GUEST) will be used.
+        // If DTO role is null, the entity's default role (GUEST) will be used as defined in the entity.
 
         UserAccount savedUserAccount = userAccountRepository.save(userAccount);
-        return convertToDTO(savedUserAccount);
+        return convertToDTO(savedUserAccount); // Be cautious: DTO includes password here.
     }
 
     @Override
-    public Optional<UserAccountDTO> findById(Integer id) { // Renamed from getUserAccountById
-        // By default, password is not included in DTOs from GET operations for security.
+    public Optional<UserAccountDTO> findById(Integer id) {
         return userAccountRepository.findById(id).map(this::convertToDTOWithoutPassword);
     }
 
     @Override
-    public Optional<UserAccountDTO> findByUsername(String username) { // Renamed from getUserAccountByUsername
-        // By default, password is not included in DTOs from GET operations for security.
+    public Optional<UserAccountDTO> findByUsername(String username) {
         return userAccountRepository.findByUsername(username).map(this::convertToDTOWithoutPassword);
     }
 
     @Override
-    public List<UserAccountDTO> findAll() { // Renamed from getAllUserAccounts
-        // By default, password is not included in DTOs from GET operations for security.
+    public List<UserAccountDTO> findAll() {
         return userAccountRepository.findAll().stream()
                 .map(this::convertToDTOWithoutPassword)
                 .collect(Collectors.toList());
@@ -80,8 +76,7 @@ public class UserAccountServiceImpl implements UserAccountService {
             existingUserAccount.setUsername(userAccountDTO.getUsername());
         }
 
-        // Password updates should ideally be handled via a separate, more secure mechanism
-        // (e.g., a dedicated "changePassword" endpoint requiring current password).
+        // Password updates should ideally be handled via a separate, more secure mechanism.
         if (userAccountDTO.getPassword() != null && !userAccountDTO.getPassword().isEmpty()) {
             // TODO: Implement password hashing before saving, e.g.:
             // existingUserAccount.setPassword(passwordEncoder.encode(userAccountDTO.getPassword()));
@@ -94,7 +89,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         existingUserAccount.setUpdatedAt(LocalDateTime.now());
 
         UserAccount updatedUserAccount = userAccountRepository.save(existingUserAccount);
-        return convertToDTO(updatedUserAccount); // DTO includes password here; be cautious with client exposure.
+        return convertToDTO(updatedUserAccount); // Be cautious: DTO includes password here.
     }
 
     @Override
@@ -103,8 +98,8 @@ public class UserAccountServiceImpl implements UserAccountService {
         if (!userAccountRepository.existsById(id)) {
             throw new ResourceNotFoundException("UserAccount not found with id: " + id);
         }
-        // Consider the implications of deleting a user account, e.g., on related Patient or Doctor records.
-        // A soft delete (marking as inactive) might be a safer approach in many systems.
+        // Consider the implications of deleting a user account (e.g., on related Patient or Doctor records).
+        // A soft delete (marking as inactive) might be a safer approach.
         userAccountRepository.deleteById(id);
     }
 
@@ -112,9 +107,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         UserAccountDTO dto = new UserAccountDTO();
         dto.setId(userAccount.getId());
         dto.setUsername(userAccount.getUsername());
-        // Password is included here. This DTO might be used internally or for responses
-        // where the password (even if hashed) is needed. For general client responses,
-        // prefer convertToDTOWithoutPassword.
+        // This DTO includes the password. For general client responses, prefer convertToDTOWithoutPassword.
         dto.setPassword(userAccount.getPassword());
         dto.setRole(userAccount.getRole());
         dto.setCreatedAt(userAccount.getCreatedAt());
@@ -126,7 +119,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         UserAccountDTO dto = new UserAccountDTO();
         dto.setId(userAccount.getId());
         dto.setUsername(userAccount.getUsername());
-        dto.setPassword(null); // Explicitly exclude password for security.
+        dto.setPassword(null); // Explicitly exclude password for security in most client-facing scenarios.
         dto.setRole(userAccount.getRole());
         dto.setCreatedAt(userAccount.getCreatedAt());
         dto.setUpdatedAt(userAccount.getUpdatedAt());
@@ -140,7 +133,6 @@ public class UserAccountServiceImpl implements UserAccountService {
         // Password is set as-is from DTO; hashing should be implemented in the save/update service methods.
         userAccount.setPassword(userAccountDTO.getPassword());
         userAccount.setRole(userAccountDTO.getRole() == null ? UserAccount.Role.GUEST : userAccountDTO.getRole());
-        // createdAt and updatedAt are set in the service methods (save/update)
         return userAccount;
     }
 }

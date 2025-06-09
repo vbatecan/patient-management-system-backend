@@ -6,10 +6,10 @@ import java.util.Optional;
 
 public interface DoctorService {
     DoctorDTO save(DoctorDTO doctorDTO);
-    Optional<DoctorDTO> findById(Integer id); // Renamed from getDoctorById
-    Optional<DoctorDTO> findByUserAccountId(Integer userAccountId); // Renamed from getDoctorByUserAccountId
-    Optional<DoctorDTO> findByEmail(String email); // Renamed from getDoctorByEmail
-    List<DoctorDTO> findAll(); // Renamed from getAllDoctors
+    Optional<DoctorDTO> findById(Integer id);
+    Optional<DoctorDTO> findByUserAccountId(Integer userAccountId);
+    Optional<DoctorDTO> findByEmail(String email);
+    List<DoctorDTO> findAll();
     DoctorDTO update(Integer id, DoctorDTO doctorDTO);
     void delete(Integer id);
 }

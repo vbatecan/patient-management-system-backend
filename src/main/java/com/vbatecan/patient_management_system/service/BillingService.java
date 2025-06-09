@@ -6,10 +6,10 @@ import java.util.Optional;
 
 public interface BillingService {
     BillingDTO save(BillingDTO billingDTO);
-    Optional<BillingDTO> findById(Integer id); // Renamed from getBillingById
-    List<BillingDTO> findAll(); // Renamed from getAllBillings
-    List<BillingDTO> findByPatientId(Integer patientId); // Renamed from getBillingsByPatientId
-    List<BillingDTO> findByAppointmentId(Integer appointmentId); // Renamed from getBillingsByAppointmentId
+    Optional<BillingDTO> findById(Integer id);
+    List<BillingDTO> findAll();
+    List<BillingDTO> findByPatientId(Integer patientId);
+    List<BillingDTO> findByAppointmentId(Integer appointmentId);
     BillingDTO update(Integer id, BillingDTO billingDTO);
     BillingDTO updateBillingStatus(Integer id, String status);
     void delete(Integer id);

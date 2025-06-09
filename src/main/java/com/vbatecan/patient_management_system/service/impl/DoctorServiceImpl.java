@@ -44,22 +44,22 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public Optional<DoctorDTO> findById(Integer id) { // Renamed from getDoctorById
+    public Optional<DoctorDTO> findById(Integer id) {
         return doctorRepository.findById(id).map(this::convertToDTO);
     }
 
     @Override
-    public Optional<DoctorDTO> findByUserAccountId(Integer userAccountId) { // Renamed from getDoctorByUserAccountId
+    public Optional<DoctorDTO> findByUserAccountId(Integer userAccountId) {
         return doctorRepository.findByUserAccountId(userAccountId).map(this::convertToDTO);
     }
      @Override
-    public Optional<DoctorDTO> findByEmail(String email) { // Renamed from getDoctorByEmail
+    public Optional<DoctorDTO> findByEmail(String email) {
         return doctorRepository.findByEmail(email).map(this::convertToDTO);
     }
 
 
     @Override
-    public List<DoctorDTO> findAll() { // Renamed from getAllDoctors
+    public List<DoctorDTO> findAll() {
         return doctorRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());

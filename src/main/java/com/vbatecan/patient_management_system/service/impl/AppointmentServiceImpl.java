@@ -11,6 +11,7 @@ import com.vbatecan.patient_management_system.repository.PatientRepository;
 import com.vbatecan.patient_management_system.service.AppointmentService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,17 +19,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor // Replaced explicit constructor with Lombok annotation
 public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
     private final PatientRepository patientRepository;
     private final DoctorRepository doctorRepository;
-
-    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, PatientRepository patientRepository, DoctorRepository doctorRepository) {
-        this.appointmentRepository = appointmentRepository;
-        this.patientRepository = patientRepository;
-        this.doctorRepository = doctorRepository;
-    }
 
     @Override
     @Transactional
@@ -45,19 +41,19 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public Optional<AppointmentDTO> findById(Integer id) { // Renamed from getAppointmentById
+    public Optional<AppointmentDTO> findById(Integer id) {
         return appointmentRepository.findById(id).map(this::convertToDTO);
     }
 
     @Override
-    public List<AppointmentDTO> findAll() { // Renamed from getAllAppointments
+    public List<AppointmentDTO> findAll() {
         return appointmentRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<AppointmentDTO> findByPatientId(Integer patientId) { // Renamed from getAppointmentsByPatientId
+    public List<AppointmentDTO> findByPatientId(Integer patientId) {
         if (!patientRepository.existsById(patientId)) {
             throw new ResourceNotFoundException("Patient not found with id: " + patientId);
         }
@@ -67,7 +63,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentDTO> findByDoctorId(Integer doctorId) { // Renamed from getAppointmentsByDoctorId
+    public List<AppointmentDTO> findByDoctorId(Integer doctorId) {
         if (!doctorRepository.existsById(doctorId)) {
             throw new ResourceNotFoundException("Doctor not found with id: " + doctorId);
         }

@@ -34,19 +34,19 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     }
 
     @Override
-    public Optional<MedicalRecordDTO> findById(Integer id) { // Renamed from getMedicalRecordById
+    public Optional<MedicalRecordDTO> findById(Integer id) {
         return medicalRecordRepository.findById(id).map(this::convertToDTO);
     }
 
     @Override
-    public List<MedicalRecordDTO> findAll() { // Renamed from getAllMedicalRecords
+    public List<MedicalRecordDTO> findAll() {
         return medicalRecordRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<MedicalRecordDTO> findByPatientId(Integer patientId) { // Renamed from getMedicalRecordsByPatientId
+    public List<MedicalRecordDTO> findByPatientId(Integer patientId) {
         if (!patientRepository.existsById(patientId)) {
             throw new ResourceNotFoundException("Patient not found with id: " + patientId);
         }
