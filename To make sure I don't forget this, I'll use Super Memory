@@ -1,0 +1,1 @@
+mcpm-aider call "Super Memory" addToSupermemory '{"thingToRemember": "When suggesting file changes, I MUST use the specific file listing format: 1. Filename with path ONLY. 2. Opening ```. 3. ENTIRE file content. 4. Closing ```. NEVER skip content or use placeholders like '...'."}'
