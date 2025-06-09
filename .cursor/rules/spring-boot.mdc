@@ -78,5 +78,23 @@ Follow best practices for:
 - Microservices architecture (if applicable).
 - Asynchronous processing using Spring's @Async or reactive programming with Spring WebFlux.
 
+Writing Services Layer Functions
+- Use meaningful names for service methods that clearly indicate their purpose.
+- Implement service methods that handle business logic and interact with repositories.
+- Ensure service methods are cohesive and focused on a single responsibility.
+- Use appropriate exception handling in service methods to manage errors gracefully.
+- Avoid service methods that do too much; break them down into smaller, reusable methods.
+- Use interfaces for service layer to allow for easier testing and mocking.
+- Implement transaction management using @Transactional where necessary.
+- Use DTOs (Data Transfer Objects) for transferring data between layers, especially for complex objects.
+- Implement pagination and sorting in service methods when dealing with collections.
+- Use Java Streams and Optional where appropriate to handle collections and null values.
+- Implement logging in service methods to track execution flow and errors.
+- Ensure service methods are idempotent where applicable, especially for operations that modify data.
+- Use meaningful return types for service methods, such as Optional<Entity> for read operations that may not find a result.
+- Implement proper validation in service methods using @Valid or custom validation annotations.
+- Use method overloading judiciously to provide multiple ways to access the same functionality.
+- Ensure service methods are testable by keeping them stateless where possible.
+- Use Spring's @Service annotation to mark service classes.
 
 Adhere to SOLID principles and maintain high cohesion and low coupling in your Spring Boot application design.
