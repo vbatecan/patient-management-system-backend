@@ -9,7 +9,6 @@ import com.vbatecan.patient_management_system.repository.AppointmentRepository;
 import com.vbatecan.patient_management_system.repository.DoctorRepository;
 import com.vbatecan.patient_management_system.repository.PatientRepository;
 import com.vbatecan.patient_management_system.service.AppointmentService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +18,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public abstract class AppointmentServiceImpl implements AppointmentService {
+public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
     private final PatientRepository patientRepository;
@@ -46,19 +45,19 @@ public abstract class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public Optional<AppointmentDTO> getAppointmentById(Integer id) {
+    public Optional<AppointmentDTO> findById(Integer id) { // Renamed from getAppointmentById
         return appointmentRepository.findById(id).map(this::convertToDTO);
     }
 
     @Override
-    public List<AppointmentDTO> getAllAppointments() {
+    public List<AppointmentDTO> findAll() { // Renamed from getAllAppointments
         return appointmentRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<AppointmentDTO> getAppointmentsByPatientId(Integer patientId) {
+    public List<AppointmentDTO> findByPatientId(Integer patientId) { // Renamed from getAppointmentsByPatientId
         if (!patientRepository.existsById(patientId)) {
             throw new ResourceNotFoundException("Patient not found with id: " + patientId);
         }
@@ -68,7 +67,7 @@ public abstract class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentDTO> getAppointmentsByDoctorId(Integer doctorId) {
+    public List<AppointmentDTO> findByDoctorId(Integer doctorId) { // Renamed from getAppointmentsByDoctorId
         if (!doctorRepository.existsById(doctorId)) {
             throw new ResourceNotFoundException("Doctor not found with id: " + doctorId);
         }
