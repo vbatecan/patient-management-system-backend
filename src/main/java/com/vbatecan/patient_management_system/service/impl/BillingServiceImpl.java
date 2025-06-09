@@ -41,19 +41,19 @@ public class BillingServiceImpl implements BillingService {
     }
 
     @Override
-    public Optional<BillingDTO> getBillingById(Integer id) {
+    public Optional<BillingDTO> findById(Integer id) { // Renamed from getBillingById
         return billingRepository.findById(id).map(this::convertToDTO);
     }
 
     @Override
-    public List<BillingDTO> getAllBillings() {
+    public List<BillingDTO> findAll() { // Renamed from getAllBillings
         return billingRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<BillingDTO> getBillingsByPatientId(Integer patientId) {
+    public List<BillingDTO> findByPatientId(Integer patientId) { // Renamed from getBillingsByPatientId
         if (!patientRepository.existsById(patientId)) {
             throw new ResourceNotFoundException("Patient not found with id: " + patientId);
         }
@@ -63,7 +63,7 @@ public class BillingServiceImpl implements BillingService {
     }
 
     @Override
-    public List<BillingDTO> getBillingsByAppointmentId(Integer appointmentId) {
+    public List<BillingDTO> findByAppointmentId(Integer appointmentId) { // Renamed from getBillingsByAppointmentId
          if (!appointmentRepository.existsById(appointmentId)) {
             throw new ResourceNotFoundException("Appointment not found with id: " + appointmentId);
         }

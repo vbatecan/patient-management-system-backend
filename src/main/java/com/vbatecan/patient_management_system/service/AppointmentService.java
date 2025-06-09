@@ -6,10 +6,10 @@ import java.util.Optional;
 
 public interface AppointmentService {
     AppointmentDTO save(AppointmentDTO appointmentDTO);
-    Optional<AppointmentDTO> getAppointmentById(Integer id);
-    List<AppointmentDTO> getAllAppointments();
-    List<AppointmentDTO> getAppointmentsByPatientId(Integer patientId);
-    List<AppointmentDTO> getAppointmentsByDoctorId(Integer doctorId);
+    Optional<AppointmentDTO> findById(Integer id); // Renamed from getAppointmentById
+    List<AppointmentDTO> findAll(); // Renamed from getAllAppointments
+    List<AppointmentDTO> findByPatientId(Integer patientId); // Renamed from getAppointmentsByPatientId
+    List<AppointmentDTO> findByDoctorId(Integer doctorId); // Renamed from getAppointmentsByDoctorId
     AppointmentDTO update(Integer id, AppointmentDTO appointmentDTO);
     AppointmentDTO updateAppointmentStatus(Integer id, String status);
     void delete(Integer id);

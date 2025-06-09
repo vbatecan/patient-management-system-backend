@@ -6,8 +6,8 @@ import java.util.Optional;
 
 public interface PatientService {
     PatientDTO save(PatientDTO patientDTO);
-    Optional<PatientDTO> getPatientById(Integer id);
-    List<PatientDTO> getAllPatients();
+    Optional<PatientDTO> findById(Integer id); // Renamed from getPatientById
+    List<PatientDTO> findAll(); // Renamed from getAllPatients
     PatientDTO update(Integer id, PatientDTO patientDTO);
     void delete(Integer id);
 }

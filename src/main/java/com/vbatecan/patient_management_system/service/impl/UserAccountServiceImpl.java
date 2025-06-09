@@ -47,19 +47,19 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public Optional<UserAccountDTO> getUserAccountById(Integer id) {
+    public Optional<UserAccountDTO> findById(Integer id) { // Renamed from getUserAccountById
         // By default, password is not included in DTOs from GET operations for security.
         return userAccountRepository.findById(id).map(this::convertToDTOWithoutPassword);
     }
 
     @Override
-    public Optional<UserAccountDTO> getUserAccountByUsername(String username) {
+    public Optional<UserAccountDTO> findByUsername(String username) { // Renamed from getUserAccountByUsername
         // By default, password is not included in DTOs from GET operations for security.
         return userAccountRepository.findByUsername(username).map(this::convertToDTOWithoutPassword);
     }
 
     @Override
-    public List<UserAccountDTO> getAllUserAccounts() {
+    public List<UserAccountDTO> findAll() { // Renamed from getAllUserAccounts
         // By default, password is not included in DTOs from GET operations for security.
         return userAccountRepository.findAll().stream()
                 .map(this::convertToDTOWithoutPassword)

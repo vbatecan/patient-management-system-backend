@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MedicalRecordService {
-    MedicalRecordDTO save(MedicalRecordDTO medicalRecordDTO); // Renamed from createMedicalRecord
-    Optional<MedicalRecordDTO> getMedicalRecordById(Integer id);
-    List<MedicalRecordDTO> getAllMedicalRecords();
-    List<MedicalRecordDTO> getMedicalRecordsByPatientId(Integer patientId);
-    MedicalRecordDTO update(Integer id, MedicalRecordDTO medicalRecordDTO); // Renamed from updateMedicalRecord
-    void delete(Integer id); // Renamed from deleteMedicalRecord
+    MedicalRecordDTO save(MedicalRecordDTO medicalRecordDTO);
+    Optional<MedicalRecordDTO> findById(Integer id); // Renamed from getMedicalRecordById
+    List<MedicalRecordDTO> findAll(); // Renamed from getAllMedicalRecords
+    List<MedicalRecordDTO> findByPatientId(Integer patientId); // Renamed from getMedicalRecordsByPatientId
+    MedicalRecordDTO update(Integer id, MedicalRecordDTO medicalRecordDTO);
+    void delete(Integer id);
 }

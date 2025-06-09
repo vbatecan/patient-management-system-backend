@@ -34,12 +34,12 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public Optional<PatientDTO> getPatientById(Integer id) {
+    public Optional<PatientDTO> findById(Integer id) { // Renamed from getPatientById
         return patientRepository.findById(id).map(this::convertToDTO);
     }
 
     @Override
-    public List<PatientDTO> getAllPatients() {
+    public List<PatientDTO> findAll() { // Renamed from getAllPatients
         return patientRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
