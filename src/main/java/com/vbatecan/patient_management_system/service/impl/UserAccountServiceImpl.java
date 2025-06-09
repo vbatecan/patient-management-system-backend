@@ -24,7 +24,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     @Transactional
-    public UserAccountDTO save(UserAccountDTO userAccountDTO) { // Renamed from createUserAccount
+    public UserAccountDTO save(UserAccountDTO userAccountDTO) {
         // Validate username uniqueness at service level before attempting to save,
         // even if there's a DB constraint, to provide a clearer error message.
         if (userAccountRepository.findByUsername(userAccountDTO.getUsername()).isPresent()) {
@@ -68,7 +68,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     @Transactional
-    public UserAccountDTO update(Integer id, UserAccountDTO userAccountDTO) { // Renamed from updateUserAccount
+    public UserAccountDTO update(Integer id, UserAccountDTO userAccountDTO) {
         UserAccount existingUserAccount = userAccountRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("UserAccount not found with id: " + id));
 
@@ -99,7 +99,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     @Transactional
-    public void delete(Integer id) { // Renamed from deleteUserAccount
+    public void delete(Integer id) {
         if (!userAccountRepository.existsById(id)) {
             throw new ResourceNotFoundException("UserAccount not found with id: " + id);
         }
@@ -137,4 +137,10 @@ public class UserAccountServiceImpl implements UserAccountService {
     private UserAccount convertToEntity(UserAccountDTO userAccountDTO) {
         UserAccount userAccount = new UserAccount();
         userAccount.setUsername(userAccountDTO.getUsername());
-        // Password is set as-is from DTO; hashing should be implemented in the service method (e
+        // Password is set as-is from DTO; hashing should be implemented in the save/update service methods.
+        userAccount.setPassword(userAccountDTO.getPassword());
+        userAccount.setRole(userAccountDTO.getRole() == null ? UserAccount.Role.GUEST : userAccountDTO.getRole());
+        // createdAt and updatedAt are set in the service methods (save/update)
+        return userAccount;
+    }
+}

@@ -21,11 +21,11 @@ import java.util.stream.Collectors;
 public class PatientServiceImpl implements PatientService {
 
     private final PatientRepository patientRepository;
-    private final UserAccountRepository userAccountRepository; // For linking UserAccount
+    private final UserAccountRepository userAccountRepository;
 
     @Override
     @Transactional
-    public PatientDTO createPatient(PatientDTO patientDTO) {
+    public PatientDTO save(PatientDTO patientDTO) {
         Patient patient = convertToEntity(patientDTO);
         patient.setCreatedAt(LocalDateTime.now());
         patient.setUpdatedAt(LocalDateTime.now());
@@ -47,11 +47,10 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     @Transactional
-    public PatientDTO updatePatient(Integer id, PatientDTO patientDTO) {
+    public PatientDTO update(Integer id, PatientDTO patientDTO) {
         Patient existingPatient = patientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + id));
 
-        // Update fields from DTO
         existingPatient.setFirstName(patientDTO.getFirstName());
         existingPatient.setLastName(patientDTO.getLastName());
         existingPatient.setDateOfBirth(patientDTO.getDateOfBirth());
@@ -76,7 +75,7 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     @Transactional
-    public void deletePatient(Integer id) {
+    public void delete(Integer id) {
         if (!patientRepository.existsById(id)) {
             throw new ResourceNotFoundException("Patient not found with id: " + id);
         }
@@ -104,7 +103,6 @@ public class PatientServiceImpl implements PatientService {
 
     private Patient convertToEntity(PatientDTO patientDTO) {
         Patient patient = new Patient();
-        // ID is not set for new entities, handled by JPA
         if (patientDTO.getUserAccountId() != null) {
             UserAccount userAccount = userAccountRepository.findById(patientDTO.getUserAccountId())
                     .orElseThrow(() -> new ResourceNotFoundException("UserAccount not found with id: " + patientDTO.getUserAccountId()));
@@ -118,7 +116,6 @@ public class PatientServiceImpl implements PatientService {
         patient.setEmail(patientDTO.getEmail());
         patient.setAddress(patientDTO.getAddress());
         patient.setEmergencyContact(patientDTO.getEmergencyContact());
-        // createdAt and updatedAt are set in the service method
         return patient;
     }
 }

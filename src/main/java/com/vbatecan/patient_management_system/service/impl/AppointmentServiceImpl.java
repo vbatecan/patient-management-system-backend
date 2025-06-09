@@ -28,14 +28,14 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Transactional
-    public AppointmentDTO save(AppointmentDTO appointmentDTO) { // Renamed from createAppointment
+    public AppointmentDTO save(AppointmentDTO appointmentDTO) {
         Appointment appointment = convertToEntity(appointmentDTO);
         appointment.setCreatedAt(LocalDateTime.now());
         appointment.setUpdatedAt(LocalDateTime.now());
-        // Entity default status "SCHEDULED" will be used if DTO status is null
         if (appointmentDTO.getStatus() != null) {
             appointment.setStatus(appointmentDTO.getStatus());
         }
+        // If DTO status is null, the entity's default status "SCHEDULED" will be used.
         Appointment savedAppointment = appointmentRepository.save(appointment);
         return convertToDTO(savedAppointment);
     }
@@ -74,7 +74,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Transactional
-    public AppointmentDTO update(Integer id, AppointmentDTO appointmentDTO) { // Renamed from updateAppointment
+    public AppointmentDTO update(Integer id, AppointmentDTO appointmentDTO) {
         Appointment existingAppointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id: " + id));
 
@@ -113,7 +113,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Transactional
-    public void delete(Integer id) { // Renamed from deleteAppointment
+    public void delete(Integer id) {
         if (!appointmentRepository.existsById(id)) {
             throw new ResourceNotFoundException("Appointment not found with id: " + id);
         }
@@ -156,8 +156,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         appointment.setAppointmentDate(appointmentDTO.getAppointmentDate());
         appointment.setReason(appointmentDTO.getReason());
-        // Status is handled in create/update method to respect entity default or DTO value
-        // createdAt and updatedAt are set in the service method
         return appointment;
     }
 }

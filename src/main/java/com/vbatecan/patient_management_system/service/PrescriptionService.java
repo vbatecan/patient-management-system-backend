@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PrescriptionService {
-    PrescriptionDTO createPrescription(PrescriptionDTO prescriptionDTO);
+    PrescriptionDTO save(PrescriptionDTO prescriptionDTO);
     Optional<PrescriptionDTO> getPrescriptionById(Integer id);
     List<PrescriptionDTO> getAllPrescriptions();
     List<PrescriptionDTO> getPrescriptionsByAppointmentId(Integer appointmentId);
-    PrescriptionDTO updatePrescription(Integer id, PrescriptionDTO prescriptionDTO);
-    void deletePrescription(Integer id);
+    PrescriptionDTO update(Integer id, PrescriptionDTO prescriptionDTO);
+    void delete(Integer id);
 }

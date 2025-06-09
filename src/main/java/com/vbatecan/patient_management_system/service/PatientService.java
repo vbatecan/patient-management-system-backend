@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PatientService {
-    PatientDTO save(PatientDTO patientDTO); // Renamed from createPatient
+    PatientDTO save(PatientDTO patientDTO);
     Optional<PatientDTO> getPatientById(Integer id);
     List<PatientDTO> getAllPatients();
-    PatientDTO update(Integer id, PatientDTO patientDTO); // Renamed from updatePatient
-    void delete(Integer id); // Renamed from deletePatient
+    PatientDTO update(Integer id, PatientDTO patientDTO);
+    void delete(Integer id);
 }

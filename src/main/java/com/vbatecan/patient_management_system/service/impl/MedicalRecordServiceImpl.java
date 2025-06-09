@@ -21,11 +21,11 @@ import java.util.stream.Collectors;
 public class MedicalRecordServiceImpl implements MedicalRecordService {
 
     private final MedicalRecordRepository medicalRecordRepository;
-    private final PatientRepository patientRepository; // For linking Patient
+    private final PatientRepository patientRepository;
 
     @Override
     @Transactional
-    public MedicalRecordDTO save(MedicalRecordDTO medicalRecordDTO) { // Renamed from createMedicalRecord
+    public MedicalRecordDTO save(MedicalRecordDTO medicalRecordDTO) {
         MedicalRecord medicalRecord = convertToEntity(medicalRecordDTO);
         medicalRecord.setCreatedAt(LocalDateTime.now());
         medicalRecord.setUpdatedAt(LocalDateTime.now());
@@ -57,7 +57,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 
     @Override
     @Transactional
-    public MedicalRecordDTO update(Integer id, MedicalRecordDTO medicalRecordDTO) { // Renamed from updateMedicalRecord
+    public MedicalRecordDTO update(Integer id, MedicalRecordDTO medicalRecordDTO) {
         MedicalRecord existingMedicalRecord = medicalRecordRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("MedicalRecord not found with id: " + id));
 
@@ -81,7 +81,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 
     @Override
     @Transactional
-    public void delete(Integer id) { // Renamed from deleteMedicalRecord
+    public void delete(Integer id) {
         if (!medicalRecordRepository.existsById(id)) {
             throw new ResourceNotFoundException("MedicalRecord not found with id: " + id);
         }
@@ -113,7 +113,6 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
         medicalRecord.setRecordDate(medicalRecordDTO.getRecordDate());
         medicalRecord.setDescription(medicalRecordDTO.getDescription());
         medicalRecord.setFilePath(medicalRecordDTO.getFilePath());
-        // createdAt and updatedAt are set in the service method
         return medicalRecord;
     }
 }

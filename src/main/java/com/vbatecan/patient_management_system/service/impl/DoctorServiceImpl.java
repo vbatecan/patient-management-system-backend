@@ -25,18 +25,14 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     @Transactional
-    public DoctorDTO save(DoctorDTO doctorDTO) { // Renamed from createDoctor
-        // Consider validation: e.g., email uniqueness if not handled by DB constraint
-        // For UserAccount, ensure it's a DOCTOR role or set it.
+    public DoctorDTO save(DoctorDTO doctorDTO) {
         if (doctorDTO.getUserAccountId() != null) {
             UserAccount ua = userAccountRepository.findById(doctorDTO.getUserAccountId())
                 .orElseThrow(() -> new ResourceNotFoundException("UserAccount not found with id: " + doctorDTO.getUserAccountId()));
             if (ua.getRole() != UserAccount.Role.DOCTOR) {
-                // Or automatically set it to DOCTOR, depending on requirements
                 throw new IllegalArgumentException("UserAccount provided for Doctor must have DOCTOR role.");
             }
         } else {
-            // Or create a UserAccount for the doctor here, depending on workflow
             throw new IllegalArgumentException("UserAccountId is required to create a Doctor.");
         }
 
@@ -71,7 +67,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     @Transactional
-    public DoctorDTO update(Integer id, DoctorDTO doctorDTO) { // Renamed from updateDoctor
+    public DoctorDTO update(Integer id, DoctorDTO doctorDTO) {
         Doctor existingDoctor = doctorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Doctor not found with id: " + id));
 
@@ -79,7 +75,7 @@ public class DoctorServiceImpl implements DoctorService {
         existingDoctor.setLastName(doctorDTO.getLastName());
         existingDoctor.setSpecialty(doctorDTO.getSpecialty());
         existingDoctor.setContactNumber(doctorDTO.getContactNumber());
-        existingDoctor.setEmail(doctorDTO.getEmail()); // Consider email uniqueness validation
+        existingDoctor.setEmail(doctorDTO.getEmail());
         existingDoctor.setUpdatedAt(LocalDateTime.now());
 
         if (doctorDTO.getUserAccountId() != null) {
@@ -100,7 +96,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     @Transactional
-    public void delete(Integer id) { // Renamed from deleteDoctor
+    public void delete(Integer id) {
         if (!doctorRepository.existsById(id)) {
             throw new ResourceNotFoundException("Doctor not found with id: " + id);
         }
@@ -138,7 +134,6 @@ public class DoctorServiceImpl implements DoctorService {
         doctor.setSpecialty(doctorDTO.getSpecialty());
         doctor.setContactNumber(doctorDTO.getContactNumber());
         doctor.setEmail(doctorDTO.getEmail());
-        // createdAt and updatedAt are set in the service method
         return doctor;
     }
 }

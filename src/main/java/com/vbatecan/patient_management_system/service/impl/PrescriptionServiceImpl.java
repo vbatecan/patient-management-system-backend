@@ -25,7 +25,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
     @Override
     @Transactional
-    public PrescriptionDTO createPrescription(PrescriptionDTO prescriptionDTO) {
+    public PrescriptionDTO save(PrescriptionDTO prescriptionDTO) {
         Prescription prescription = convertToEntity(prescriptionDTO);
         prescription.setCreatedAt(LocalDateTime.now());
         prescription.setUpdatedAt(LocalDateTime.now());
@@ -57,7 +57,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
     @Override
     @Transactional
-    public PrescriptionDTO updatePrescription(Integer id, PrescriptionDTO prescriptionDTO) {
+    public PrescriptionDTO update(Integer id, PrescriptionDTO prescriptionDTO) {
         Prescription existingPrescription = prescriptionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Prescription not found with id: " + id));
 
@@ -80,7 +80,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
     @Override
     @Transactional
-    public void deletePrescription(Integer id) {
+    public void delete(Integer id) {
         if (!prescriptionRepository.existsById(id)) {
             throw new ResourceNotFoundException("Prescription not found with id: " + id);
         }
@@ -114,7 +114,6 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         prescription.setMedication(prescriptionDTO.getMedication());
         prescription.setDosage(prescriptionDTO.getDosage());
         prescription.setInstructions(prescriptionDTO.getInstructions());
-        // createdAt and updatedAt are set in the service method
         return prescription;
     }
 }

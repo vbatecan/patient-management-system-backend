@@ -28,14 +28,14 @@ public class BillingServiceImpl implements BillingService {
 
     @Override
     @Transactional
-    public BillingDTO save(BillingDTO billingDTO) { // Renamed from createBilling
+    public BillingDTO save(BillingDTO billingDTO) {
         Billing billing = convertToEntity(billingDTO);
         billing.setCreatedAt(LocalDateTime.now());
         billing.setUpdatedAt(LocalDateTime.now());
-        // Entity default status "PENDING" will be used if DTO status is null
         if (billingDTO.getStatus() != null) {
             billing.setStatus(billingDTO.getStatus());
         }
+        // If DTO status is null, the entity's default status "PENDING" will be used.
         Billing savedBilling = billingRepository.save(billing);
         return convertToDTO(savedBilling);
     }
@@ -74,7 +74,7 @@ public class BillingServiceImpl implements BillingService {
 
     @Override
     @Transactional
-    public BillingDTO update(Integer id, BillingDTO billingDTO) { // Renamed from updateBilling
+    public BillingDTO update(Integer id, BillingDTO billingDTO) {
         Billing existingBilling = billingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Billing not found with id: " + id));
 
@@ -113,7 +113,7 @@ public class BillingServiceImpl implements BillingService {
 
     @Override
     @Transactional
-    public void delete(Integer id) { // Renamed from deleteBilling
+    public void delete(Integer id) {
         if (!billingRepository.existsById(id)) {
             throw new ResourceNotFoundException("Billing not found with id: " + id);
         }
@@ -156,8 +156,6 @@ public class BillingServiceImpl implements BillingService {
 
         billing.setAmount(billingDTO.getAmount());
         billing.setBillingDate(billingDTO.getBillingDate());
-        // Status is handled in create/update method
-        // createdAt and updatedAt are set in the service method
         return billing;
     }
 }
