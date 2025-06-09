@@ -78,7 +78,12 @@ Follow best practices for:
 - Microservices architecture (if applicable).
 - Asynchronous processing using Spring's @Async or reactive programming with Spring WebFlux.
 
+Commenting
+- Write meaningful comments that explain the "why" behind complex logic, not just the "what".
+- Do not write comments for obvious code; let the code speak for itself.
+
 Writing Services Layer Functions
+- Outlines naming conventions for service layer functions, specifically for CRUD (Create, Read, Update, Delete) operations. It specifies patterns for functions like save(Entity entity), update(Integer id, Entity updatedEntity), findAll, findBy, listAll, list and delete(Integer id). The document also mentions the potential for exceptions such as IllegalArgumentException and EntityExistsException.
 - Use meaningful names for service methods that clearly indicate their purpose.
 - Implement service methods that handle business logic and interact with repositories.
 - Ensure service methods are cohesive and focused on a single responsibility.
