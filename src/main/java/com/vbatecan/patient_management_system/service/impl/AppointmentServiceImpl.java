@@ -28,7 +28,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Transactional
-    public AppointmentDTO createAppointment(AppointmentDTO appointmentDTO) {
+    public AppointmentDTO save(AppointmentDTO appointmentDTO) { // Renamed from createAppointment
         Appointment appointment = convertToEntity(appointmentDTO);
         appointment.setCreatedAt(LocalDateTime.now());
         appointment.setUpdatedAt(LocalDateTime.now());
@@ -74,7 +74,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Transactional
-    public AppointmentDTO updateAppointment(Integer id, AppointmentDTO appointmentDTO) {
+    public AppointmentDTO update(Integer id, AppointmentDTO appointmentDTO) { // Renamed from updateAppointment
         Appointment existingAppointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id: " + id));
 
@@ -113,7 +113,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Transactional
-    public void deleteAppointment(Integer id) {
+    public void delete(Integer id) { // Renamed from deleteAppointment
         if (!appointmentRepository.existsById(id)) {
             throw new ResourceNotFoundException("Appointment not found with id: " + id);
         }

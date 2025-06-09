@@ -25,7 +25,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     @Transactional
-    public DoctorDTO createDoctor(DoctorDTO doctorDTO) {
+    public DoctorDTO save(DoctorDTO doctorDTO) { // Renamed from createDoctor
         // Consider validation: e.g., email uniqueness if not handled by DB constraint
         // For UserAccount, ensure it's a DOCTOR role or set it.
         if (doctorDTO.getUserAccountId() != null) {
@@ -71,7 +71,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     @Transactional
-    public DoctorDTO updateDoctor(Integer id, DoctorDTO doctorDTO) {
+    public DoctorDTO update(Integer id, DoctorDTO doctorDTO) { // Renamed from updateDoctor
         Doctor existingDoctor = doctorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Doctor not found with id: " + id));
 
@@ -100,7 +100,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     @Transactional
-    public void deleteDoctor(Integer id) {
+    public void delete(Integer id) { // Renamed from deleteDoctor
         if (!doctorRepository.existsById(id)) {
             throw new ResourceNotFoundException("Doctor not found with id: " + id);
         }

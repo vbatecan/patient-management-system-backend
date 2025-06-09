@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BillingService {
-    BillingDTO createBilling(BillingDTO billingDTO);
+    BillingDTO save(BillingDTO billingDTO); // Renamed from createBilling
     Optional<BillingDTO> getBillingById(Integer id);
     List<BillingDTO> getAllBillings();
     List<BillingDTO> getBillingsByPatientId(Integer patientId);
     List<BillingDTO> getBillingsByAppointmentId(Integer appointmentId);
-    BillingDTO updateBilling(Integer id, BillingDTO billingDTO);
+    BillingDTO update(Integer id, BillingDTO billingDTO); // Renamed from updateBilling
     BillingDTO updateBillingStatus(Integer id, String status);
-    void deleteBilling(Integer id);
+    void delete(Integer id); // Renamed from deleteBilling
 }

@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AppointmentService {
-    AppointmentDTO createAppointment(AppointmentDTO appointmentDTO);
+    AppointmentDTO save(AppointmentDTO appointmentDTO); // Renamed from createAppointment
     Optional<AppointmentDTO> getAppointmentById(Integer id);
     List<AppointmentDTO> getAllAppointments();
     List<AppointmentDTO> getAppointmentsByPatientId(Integer patientId);
     List<AppointmentDTO> getAppointmentsByDoctorId(Integer doctorId);
-    AppointmentDTO updateAppointment(Integer id, AppointmentDTO appointmentDTO);
+    AppointmentDTO update(Integer id, AppointmentDTO appointmentDTO); // Renamed from updateAppointment
     AppointmentDTO updateAppointmentStatus(Integer id, String status);
-    void deleteAppointment(Integer id);
+    void delete(Integer id); // Renamed from deleteAppointment
 }

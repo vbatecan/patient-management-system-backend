@@ -28,7 +28,7 @@ public class BillingServiceImpl implements BillingService {
 
     @Override
     @Transactional
-    public BillingDTO createBilling(BillingDTO billingDTO) {
+    public BillingDTO save(BillingDTO billingDTO) { // Renamed from createBilling
         Billing billing = convertToEntity(billingDTO);
         billing.setCreatedAt(LocalDateTime.now());
         billing.setUpdatedAt(LocalDateTime.now());
@@ -74,7 +74,7 @@ public class BillingServiceImpl implements BillingService {
 
     @Override
     @Transactional
-    public BillingDTO updateBilling(Integer id, BillingDTO billingDTO) {
+    public BillingDTO update(Integer id, BillingDTO billingDTO) { // Renamed from updateBilling
         Billing existingBilling = billingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Billing not found with id: " + id));
 
@@ -113,7 +113,7 @@ public class BillingServiceImpl implements BillingService {
 
     @Override
     @Transactional
-    public void deleteBilling(Integer id) {
+    public void delete(Integer id) { // Renamed from deleteBilling
         if (!billingRepository.existsById(id)) {
             throw new ResourceNotFoundException("Billing not found with id: " + id);
         }
