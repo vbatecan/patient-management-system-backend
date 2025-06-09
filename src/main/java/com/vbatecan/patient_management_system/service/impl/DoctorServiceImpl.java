@@ -1,0 +1,144 @@
+package com.vbatecan.patient_management_system.service.impl;
+
+import com.vbatecan.patient_management_system.dto.DoctorDTO;
+import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
+import com.vbatecan.patient_management_system.model.Doctor;
+import com.vbatecan.patient_management_system.model.UserAccount;
+import com.vbatecan.patient_management_system.repository.DoctorRepository;
+import com.vbatecan.patient_management_system.repository.UserAccountRepository;
+import com.vbatecan.patient_management_system.service.DoctorService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class DoctorServiceImpl implements DoctorService {
+
+    private final DoctorRepository doctorRepository;
+    private final UserAccountRepository userAccountRepository;
+
+    @Override
+    @Transactional
+    public DoctorDTO createDoctor(DoctorDTO doctorDTO) {
+        // Consider validation: e.g., email uniqueness if not handled by DB constraint
+        // For UserAccount, ensure it's a DOCTOR role or set it.
+        if (doctorDTO.getUserAccountId() != null) {
+            UserAccount ua = userAccountRepository.findById(doctorDTO.getUserAccountId())
+                .orElseThrow(() -> new ResourceNotFoundException("UserAccount not found with id: " + doctorDTO.getUserAccountId()));
+            if (ua.getRole() != UserAccount.Role.DOCTOR) {
+                // Or automatically set it to DOCTOR, depending on requirements
+                throw new IllegalArgumentException("UserAccount provided for Doctor must have DOCTOR role.");
+            }
+        } else {
+            // Or create a UserAccount for the doctor here, depending on workflow
+            throw new IllegalArgumentException("UserAccountId is required to create a Doctor.");
+        }
+
+        Doctor doctor = convertToEntity(doctorDTO);
+        doctor.setCreatedAt(LocalDateTime.now());
+        doctor.setUpdatedAt(LocalDateTime.now());
+        Doctor savedDoctor = doctorRepository.save(doctor);
+        return convertToDTO(savedDoctor);
+    }
+
+    @Override
+    public Optional<DoctorDTO> getDoctorById(Integer id) {
+        return doctorRepository.findById(id).map(this::convertToDTO);
+    }
+
+    @Override
+    public Optional<DoctorDTO> getDoctorByUserAccountId(Integer userAccountId) {
+        return doctorRepository.findByUserAccountId(userAccountId).map(this::convertToDTO);
+    }
+     @Override
+    public Optional<DoctorDTO> getDoctorByEmail(String email) {
+        return doctorRepository.findByEmail(email).map(this::convertToDTO);
+    }
+
+
+    @Override
+    public List<DoctorDTO> getAllDoctors() {
+        return doctorRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public DoctorDTO updateDoctor(Integer id, DoctorDTO doctorDTO) {
+        Doctor existingDoctor = doctorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor not found with id: " + id));
+
+        existingDoctor.setFirstName(doctorDTO.getFirstName());
+        existingDoctor.setLastName(doctorDTO.getLastName());
+        existingDoctor.setSpecialty(doctorDTO.getSpecialty());
+        existingDoctor.setContactNumber(doctorDTO.getContactNumber());
+        existingDoctor.setEmail(doctorDTO.getEmail()); // Consider email uniqueness validation
+        existingDoctor.setUpdatedAt(LocalDateTime.now());
+
+        if (doctorDTO.getUserAccountId() != null) {
+            UserAccount userAccount = userAccountRepository.findById(doctorDTO.getUserAccountId())
+                    .orElseThrow(() -> new ResourceNotFoundException("UserAccount not found with id: " + doctorDTO.getUserAccountId()));
+             if (userAccount.getRole() != UserAccount.Role.DOCTOR) {
+                throw new IllegalArgumentException("UserAccount provided for Doctor must have DOCTOR role.");
+            }
+            existingDoctor.setUserAccount(userAccount);
+        } else {
+             throw new IllegalArgumentException("UserAccountId cannot be null when updating a Doctor.");
+        }
+
+
+        Doctor updatedDoctor = doctorRepository.save(existingDoctor);
+        return convertToDTO(updatedDoctor);
+    }
+
+    @Override
+    @Transactional
+    public void deleteDoctor(Integer id) {
+        if (!doctorRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Doctor not found with id: " + id);
+        }
+        // Consider implications: what happens to appointments linked to this doctor?
+        doctorRepository.deleteById(id);
+    }
+
+    private DoctorDTO convertToDTO(Doctor doctor) {
+        DoctorDTO dto = new DoctorDTO();
+        dto.setId(doctor.getId());
+        if (doctor.getUserAccount() != null) {
+            dto.setUserAccountId(doctor.getUserAccount().getId());
+        }
+        dto.setFirstName(doctor.getFirstName());
+        dto.setLastName(doctor.getLastName());
+        dto.setSpecialty(doctor.getSpecialty());
+        dto.setContactNumber(doctor.getContactNumber());
+        dto.setEmail(doctor.getEmail());
+        dto.setCreatedAt(doctor.getCreatedAt());
+        dto.setUpdatedAt(doctor.getUpdatedAt());
+        return dto;
+    }
+
+    private Doctor convertToEntity(DoctorDTO doctorDTO) {
+        Doctor doctor = new Doctor();
+        if (doctorDTO.getUserAccountId() == null) {
+            throw new IllegalArgumentException("UserAccountId is required for a Doctor.");
+        }
+        UserAccount userAccount = userAccountRepository.findById(doctorDTO.getUserAccountId())
+                .orElseThrow(() -> new ResourceNotFoundException("UserAccount not found with id: " + doctorDTO.getUserAccountId()));
+        doctor.setUserAccount(userAccount);
+
+        doctor.setFirstName(doctorDTO.getFirstName());
+        doctor.setLastName(doctorDTO.getLastName());
+        doctor.setSpecialty(doctorDTO.getSpecialty());
+        doctor.setContactNumber(doctorDTO.getContactNumber());
+        doctor.setEmail(doctorDTO.getEmail());
+        // createdAt and updatedAt are set in the service method
+        return doctor;
+    }
+}
