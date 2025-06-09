@@ -1,6 +1,7 @@
 package com.vbatecan.patient_management_system.controller;
 
 import com.vbatecan.patient_management_system.dto.AppointmentDTO;
+import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
 import com.vbatecan.patient_management_system.service.AppointmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -55,7 +56,7 @@ public class AppointmentController {
         try {
             AppointmentDTO updatedAppointment = appointmentService.update(id, appointmentDTO);
             return ResponseEntity.ok(updatedAppointment);
-        } catch (Exception e) { // Catching generic exception, specific ones like ResourceNotFound can be handled by an advice
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -69,7 +70,7 @@ public class AppointmentController {
         try {
             AppointmentDTO updatedAppointment = appointmentService.updateAppointmentStatus(id, status);
             return ResponseEntity.ok(updatedAppointment);
-        } catch (Exception e) { // Catching generic exception
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -79,7 +80,7 @@ public class AppointmentController {
         try {
             appointmentService.delete(id);
             return ResponseEntity.noContent().build();
-        } catch (Exception e) { // Catching generic exception
+        } catch (ResourceNotFoundException e) {
              return ResponseEntity.notFound().build();
         }
     }
