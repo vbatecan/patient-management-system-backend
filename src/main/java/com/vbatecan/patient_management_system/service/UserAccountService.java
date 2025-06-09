@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserAccountService {
-    UserAccountDTO createUserAccount(UserAccountDTO userAccountDTO);
+    UserAccountDTO save(UserAccountDTO userAccountDTO); // Renamed from createUserAccount
     Optional<UserAccountDTO> getUserAccountById(Integer id);
     Optional<UserAccountDTO> getUserAccountByUsername(String username);
     List<UserAccountDTO> getAllUserAccounts();
-    UserAccountDTO updateUserAccount(Integer id, UserAccountDTO userAccountDTO);
+    UserAccountDTO update(Integer id, UserAccountDTO userAccountDTO); // Renamed from updateUserAccount
     // updatePassword method might be separate and more secure
-    void deleteUserAccount(Integer id);
+    void delete(Integer id); // Renamed from deleteUserAccount
 }
