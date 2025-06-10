@@ -65,7 +65,7 @@ public class AppointmentController {
     public ResponseEntity<AppointmentDTO> updateAppointmentStatus(@PathVariable Integer id, @RequestBody Map<String, String> statusUpdate) {
         String status = statusUpdate.get("status");
         if (status == null || status.trim().isEmpty()) {
-            return ResponseEntity.badRequest().build(); // Or throw a custom exception
+            return ResponseEntity.badRequest().build();
         }
         try {
             AppointmentDTO updatedAppointment = appointmentService.updateAppointmentStatus(id, status);

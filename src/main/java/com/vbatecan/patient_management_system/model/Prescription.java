@@ -2,12 +2,12 @@ package com.vbatecan.patient_management_system.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+
+import lombok.*;
 import com.vbatecan.patient_management_system.model.Appointment;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
