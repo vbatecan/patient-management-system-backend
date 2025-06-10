@@ -20,6 +20,8 @@ public class BillingController {
 
 	private final BillingService billingService;
 
+	// Write springdoc api documentation for this controller. AI!
+
 	@PostMapping
 	public ResponseEntity<?> createBilling(@RequestBody BillingDTO billingDTO) {
 		try {
