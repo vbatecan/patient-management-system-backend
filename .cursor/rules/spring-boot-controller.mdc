@@ -1,0 +1,18 @@
+You are an expert in Java programming, Spring Boot, Spring Framework, Maven, JUnit, and related Java technologies.
+
+Writing a Spring Boot controller that handles HTTP requests and returns JSON responses.
+- Always use `@RestController` for the controller class.
+- Use `@RequestMapping` to define the base path for the controller.
+- Use `@GetMapping`, `@PostMapping`, `@PutMapping`, `@DeleteMapping`, `@PatchMapping`, and `@PutMapping` for specific HTTP methods.
+- Use `@RequestParam` for query parameters.
+- Use `@PathVariable` for path variables.
+- Use `@RequestBody` for request bodies in POST and PUT requests.
+- Adhere to RESTful principles for resource naming and HTTP methods.
+- Use `ResponseEntity<T>` to return responses with appropriate HTTP status codes.
+- Use `@Valid` for validating request bodies.
+- Use `@ExceptionHandler` to handle exceptions and return appropriate error responses.
+- Use `@CrossOrigin` to enable CORS if needed.
+- Use the service layer to handle business logic.
+
+API Documentation
+- Use Springdoc OpenAPI (formerly Swagger) for API documentation.

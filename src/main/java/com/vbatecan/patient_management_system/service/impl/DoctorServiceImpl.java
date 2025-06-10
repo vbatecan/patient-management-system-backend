@@ -88,7 +88,6 @@ public class DoctorServiceImpl implements DoctorService {
 			throw new IllegalArgumentException("UserAccountId cannot be null when updating a Doctor.");
 		}
 
-
 		Doctor updatedDoctor = doctorRepository.save(existingDoctor);
 		return convertToDTO(updatedDoctor);
 	}

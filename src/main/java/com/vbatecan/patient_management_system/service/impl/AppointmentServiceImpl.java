@@ -29,14 +29,23 @@ public class AppointmentServiceImpl implements AppointmentService {
 	@Override
 	@Transactional
 	public AppointmentDTO save(AppointmentDTO appointmentDTO) {
-		Appointment appointment = convertToEntity(appointmentDTO);
-		appointment.setCreatedAt(LocalDateTime.now());
-		appointment.setUpdatedAt(LocalDateTime.now());
-		if ( appointmentDTO.getStatus() != null ) {
-			appointment.setStatus(appointmentDTO.getStatus());
+		try {
+			Appointment appointment = convertToEntity(appointmentDTO);
+
+			appointment.setCreatedAt(LocalDateTime.now());
+			appointment.setUpdatedAt(LocalDateTime.now());
+
+			if ( appointmentDTO.getStatus() != null ) {
+				appointment.setStatus(appointmentDTO.getStatus());
+			}
+
+			Appointment savedAppointment = appointmentRepository.save(appointment);
+			return convertToDTO(savedAppointment);
+		} catch ( ResourceNotFoundException e ) {
+			throw new ResourceNotFoundException("Error saving appointment: " + e.getMessage());
+		} catch ( IllegalArgumentException e ) {
+			throw new IllegalArgumentException("Invalid data provided for appointment: " + e.getMessage());
 		}
-		Appointment savedAppointment = appointmentRepository.save(appointment);
-		return convertToDTO(savedAppointment);
 	}
 
 	@Override
@@ -115,13 +124,17 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 	private AppointmentDTO convertToDTO(Appointment appointment) {
 		AppointmentDTO dto = new AppointmentDTO();
+
 		dto.setId(appointment.getId());
+
 		if ( appointment.getPatient() != null ) {
 			dto.setPatientId(appointment.getPatient().getId());
 		}
+
 		if ( appointment.getDoctor() != null ) {
 			dto.setDoctorId(appointment.getDoctor().getId());
 		}
+
 		dto.setAppointmentDate(appointment.getAppointmentDate());
 		dto.setReason(appointment.getReason());
 		dto.setStatus(appointment.getStatus());
@@ -130,7 +143,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 		return dto;
 	}
 
-	private Appointment convertToEntity(AppointmentDTO appointmentDTO) {
+	private Appointment convertToEntity(AppointmentDTO appointmentDTO) throws ResourceNotFoundException {
 		Appointment appointment = new Appointment();
 
 		if ( appointmentDTO.getPatientId() == null ) {
@@ -146,7 +159,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 		Doctor doctor = doctorRepository.findById(appointmentDTO.getDoctorId())
 			.orElseThrow(() -> new ResourceNotFoundException("Doctor not found with id: " + appointmentDTO.getDoctorId()));
 		appointment.setDoctor(doctor);
-
 		appointment.setAppointmentDate(appointmentDTO.getAppointmentDate());
 		appointment.setReason(appointmentDTO.getReason());
 		return appointment;
