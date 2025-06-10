@@ -23,6 +23,8 @@ public class AppointmentController {
 
 	private final AppointmentService appointmentService;
 
+	// Write springdoc api documentation for this controller. AI!
+
 	@PostMapping
 	public ResponseEntity<AppointmentDTO> createAppointment(@RequestBody AppointmentDTO appointmentDTO) {
 		Appointment savedAppointment = appointmentService.save(appointmentDTO);
