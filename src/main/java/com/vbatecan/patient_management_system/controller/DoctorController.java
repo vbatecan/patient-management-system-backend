@@ -2,6 +2,7 @@ package com.vbatecan.patient_management_system.controller;
 
 import com.vbatecan.patient_management_system.dto.DoctorDTO;
 import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
+import com.vbatecan.patient_management_system.model.Doctor;
 import com.vbatecan.patient_management_system.service.DoctorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -36,8 +37,8 @@ public class DoctorController {
 	})
 	@PostMapping
 	public ResponseEntity<DoctorDTO> createDoctor(@Valid @RequestBody DoctorDTO doctorDTO) {
-		DoctorDTO savedDoctor = doctorService.save(doctorDTO);
-		return new ResponseEntity<>(savedDoctor, HttpStatus.CREATED);
+		Doctor savedDoctor = doctorService.save(doctorDTO);
+		return new ResponseEntity<>(convertToDTO(savedDoctor), HttpStatus.CREATED);
 	}
 
 	@Operation(summary = "Get a doctor by ID", description = "Retrieves a specific doctor by their unique ID.")
@@ -49,9 +50,9 @@ public class DoctorController {
 	})
 	@GetMapping("/{id}")
 	public ResponseEntity<DoctorDTO> getDoctorById(@PathVariable Integer id) {
-		Optional<DoctorDTO> doctorDTOOptional = doctorService.findById(id);
-		return doctorDTOOptional
-			.map(ResponseEntity::ok)
+		Optional<Doctor> doctorOptional = doctorService.findById(id);
+		return doctorOptional
+			.map(doctor -> ResponseEntity.ok(convertToDTO(doctor)))
 			.orElseGet(() -> ResponseEntity.notFound().build());
 	}
 
@@ -64,9 +65,9 @@ public class DoctorController {
 	})
 	@GetMapping("/user-account/{userAccountId}")
 	public ResponseEntity<DoctorDTO> getDoctorByUserAccountId(@PathVariable Integer userAccountId) {
-		Optional<DoctorDTO> doctorDTOOptional = doctorService.findByUserAccountId(userAccountId);
-		return doctorDTOOptional
-			.map(ResponseEntity::ok)
+		Optional<Doctor> doctorOptional = doctorService.findByUserAccountId(userAccountId);
+		return doctorOptional
+			.map(doctor -> ResponseEntity.ok(convertToDTO(doctor)))
 			.orElseGet(() -> ResponseEntity.notFound().build());
 	}
 
@@ -79,9 +80,9 @@ public class DoctorController {
 	})
 	@GetMapping("/email/{email}")
 	public ResponseEntity<DoctorDTO> getDoctorByEmail(@PathVariable String email) {
-		Optional<DoctorDTO> doctorDTOOptional = doctorService.findByEmail(email);
-		return doctorDTOOptional
-			.map(ResponseEntity::ok)
+		Optional<Doctor> doctorOptional = doctorService.findByEmail(email);
+		return doctorOptional
+			.map(doctor -> ResponseEntity.ok(convertToDTO(doctor)))
 			.orElseGet(() -> ResponseEntity.notFound().build());
 	}
 
@@ -92,8 +93,9 @@ public class DoctorController {
 	})
 	@GetMapping
 	public ResponseEntity<Page<DoctorDTO>> getAllDoctors(Pageable pageable) {
-		Page<DoctorDTO> doctors = doctorService.findAll(pageable);
-		return ResponseEntity.ok(doctors);
+		Page<Doctor> doctors = doctorService.findAll(pageable);
+		Page<DoctorDTO> doctorDTOs = doctors.map(this::convertToDTO);
+		return ResponseEntity.ok(doctorDTOs);
 	}
 
 	@Operation(summary = "Update an existing doctor", description = "Updates the details of an existing doctor by their ID.")
@@ -107,8 +109,8 @@ public class DoctorController {
 	})
 	@PutMapping("/{id}")
 	public ResponseEntity<DoctorDTO> updateDoctor(@PathVariable Integer id, @Valid @RequestBody DoctorDTO doctorDTO) {
-		DoctorDTO updatedDoctor = doctorService.update(id, doctorDTO);
-		return ResponseEntity.ok(updatedDoctor);
+		Doctor updatedDoctor = doctorService.update(id, doctorDTO);
+		return ResponseEntity.ok(convertToDTO(updatedDoctor));
 	}
 
 	@Operation(summary = "Delete a doctor", description = "Deletes a doctor by their ID.")
@@ -131,5 +133,21 @@ public class DoctorController {
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+	}
+	
+	private DoctorDTO convertToDTO(Doctor doctor) {
+		DoctorDTO dto = new DoctorDTO();
+		dto.setId(doctor.getId());
+		if (doctor.getUserAccount() != null) {
+			dto.setUserAccountId(doctor.getUserAccount().getId());
+		}
+		dto.setFirstName(doctor.getFirstName());
+		dto.setLastName(doctor.getLastName());
+		dto.setSpecialty(doctor.getSpecialty());
+		dto.setContactNumber(doctor.getContactNumber());
+		dto.setEmail(doctor.getEmail());
+		dto.setCreatedAt(doctor.getCreatedAt());
+		dto.setUpdatedAt(doctor.getUpdatedAt());
+		return dto;
 	}
 }

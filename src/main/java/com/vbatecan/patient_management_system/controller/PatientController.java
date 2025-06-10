@@ -2,6 +2,7 @@ package com.vbatecan.patient_management_system.controller;
 
 import com.vbatecan.patient_management_system.dto.PatientDTO;
 import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
+import com.vbatecan.patient_management_system.model.Patient;
 import com.vbatecan.patient_management_system.service.PatientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -38,8 +39,8 @@ public class PatientController {
 	})
 	@PostMapping
 	public ResponseEntity<PatientDTO> createPatient(@Valid @RequestBody PatientDTO patientDTO) {
-		PatientDTO savedPatient = patientService.save(patientDTO);
-		return new ResponseEntity<>(savedPatient, HttpStatus.CREATED);
+		Patient savedPatient = patientService.save(patientDTO);
+		return new ResponseEntity<>(convertToDTO(savedPatient), HttpStatus.CREATED);
 	}
 
 	@Operation(summary = "Get a patient by ID", description = "Retrieves a specific patient by their unique ID.")
@@ -51,9 +52,9 @@ public class PatientController {
 	})
 	@GetMapping("/{id}")
 	public ResponseEntity<PatientDTO> getPatientById(@PathVariable Integer id) {
-		Optional<PatientDTO> patientDTOOptional = patientService.findById(id);
-		return patientDTOOptional
-			.map(ResponseEntity::ok)
+		Optional<Patient> patientOptional = patientService.findById(id);
+		return patientOptional
+			.map(patient -> ResponseEntity.ok(convertToDTO(patient)))
 			.orElseGet(() -> ResponseEntity.notFound().build());
 	}
 
@@ -64,8 +65,9 @@ public class PatientController {
 	})
 	@GetMapping
 	public ResponseEntity<Page<PatientDTO>> getAllPatients(Pageable pageable) {
-		Page<PatientDTO> patients = patientService.findAll(pageable);
-		return ResponseEntity.ok(patients);
+		Page<Patient> patients = patientService.findAll(pageable);
+		Page<PatientDTO> patientDTOs = patients.map(this::convertToDTO);
+		return ResponseEntity.ok(patientDTOs);
 	}
 
 	@Operation(summary = "Update an existing patient", description = "Updates the details of an existing patient by their ID.")
@@ -79,8 +81,8 @@ public class PatientController {
 	})
 	@PutMapping("/{id}")
 	public ResponseEntity<PatientDTO> updatePatient(@PathVariable Integer id, @Valid @RequestBody PatientDTO patientDTO) {
-		PatientDTO updatedPatient = patientService.update(id, patientDTO);
-		return ResponseEntity.ok(updatedPatient);
+		Patient updatedPatient = patientService.update(id, patientDTO);
+		return ResponseEntity.ok(convertToDTO(updatedPatient));
 	}
 
 	@Operation(summary = "Delete a patient", description = "Deletes a patient by their ID.")
@@ -103,5 +105,24 @@ public class PatientController {
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+	}
+	
+	private PatientDTO convertToDTO(Patient patient) {
+		PatientDTO dto = new PatientDTO();
+		dto.setId(patient.getId());
+		if (patient.getUserAccount() != null) {
+			dto.setUserAccountId(patient.getUserAccount().getId());
+		}
+		dto.setFirstName(patient.getFirstName());
+		dto.setLastName(patient.getLastName());
+		dto.setDateOfBirth(patient.getDateOfBirth());
+		dto.setGender(patient.getGender());
+		dto.setContactNumber(patient.getContactNumber());
+		dto.setEmail(patient.getEmail());
+		dto.setAddress(patient.getAddress());
+		dto.setEmergencyContact(patient.getEmergencyContact());
+		dto.setCreatedAt(patient.getCreatedAt());
+		dto.setUpdatedAt(patient.getUpdatedAt());
+		return dto;
 	}
 }

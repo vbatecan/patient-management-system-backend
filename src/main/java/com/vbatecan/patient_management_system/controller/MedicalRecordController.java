@@ -2,6 +2,7 @@ package com.vbatecan.patient_management_system.controller;
 
 import com.vbatecan.patient_management_system.dto.MedicalRecordDTO;
 import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
+import com.vbatecan.patient_management_system.model.MedicalRecord;
 import com.vbatecan.patient_management_system.service.MedicalRecordService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -38,8 +39,8 @@ public class MedicalRecordController {
 	})
 	@PostMapping
 	public ResponseEntity<MedicalRecordDTO> createMedicalRecord(@Valid @RequestBody MedicalRecordDTO medicalRecordDTO) {
-		MedicalRecordDTO savedMedicalRecord = medicalRecordService.save(medicalRecordDTO);
-		return new ResponseEntity<>(savedMedicalRecord, HttpStatus.CREATED);
+		MedicalRecord savedMedicalRecord = medicalRecordService.save(medicalRecordDTO);
+		return new ResponseEntity<>(convertToDTO(savedMedicalRecord), HttpStatus.CREATED);
 	}
 
 	@Operation(summary = "Get a medical record by ID", description = "Retrieves a specific medical record by its unique ID.")
@@ -51,9 +52,9 @@ public class MedicalRecordController {
 	})
 	@GetMapping("/{id}")
 	public ResponseEntity<MedicalRecordDTO> getMedicalRecordById(@PathVariable Integer id) {
-		Optional<MedicalRecordDTO> medicalRecordDTOOptional = medicalRecordService.findById(id);
-		return medicalRecordDTOOptional
-			.map(ResponseEntity::ok)
+		Optional<MedicalRecord> medicalRecordOptional = medicalRecordService.findById(id);
+		return medicalRecordOptional
+			.map(medicalRecord -> ResponseEntity.ok(convertToDTO(medicalRecord)))
 			.orElseGet(() -> ResponseEntity.notFound().build());
 	}
 
@@ -64,8 +65,9 @@ public class MedicalRecordController {
 	})
 	@GetMapping
 	public ResponseEntity<Page<MedicalRecordDTO>> getAllMedicalRecords(Pageable pageable) {
-		Page<MedicalRecordDTO> medicalRecords = medicalRecordService.findAll(pageable);
-		return ResponseEntity.ok(medicalRecords);
+		Page<MedicalRecord> medicalRecords = medicalRecordService.findAll(pageable);
+		Page<MedicalRecordDTO> medicalRecordDTOs = medicalRecords.map(this::convertToDTO);
+		return ResponseEntity.ok(medicalRecordDTOs);
 	}
 
 	@Operation(summary = "Get medical records by Patient ID", description = "Retrieves a paginated list of medical records for a specific patient.")
@@ -77,8 +79,9 @@ public class MedicalRecordController {
 	})
 	@GetMapping("/patient/{patientId}")
 	public ResponseEntity<Page<MedicalRecordDTO>> getMedicalRecordsByPatientId(@PathVariable Integer patientId, Pageable pageable) {
-		Page<MedicalRecordDTO> medicalRecords = medicalRecordService.findByPatientId(patientId, pageable);
-		return ResponseEntity.ok(medicalRecords);
+		Page<MedicalRecord> medicalRecords = medicalRecordService.findByPatientId(patientId, pageable);
+		Page<MedicalRecordDTO> medicalRecordDTOs = medicalRecords.map(this::convertToDTO);
+		return ResponseEntity.ok(medicalRecordDTOs);
 	}
 
 	@Operation(summary = "Update an existing medical record", description = "Updates the details of an existing medical record by its ID.")
@@ -92,8 +95,8 @@ public class MedicalRecordController {
 	})
 	@PutMapping("/{id}")
 	public ResponseEntity<MedicalRecordDTO> updateMedicalRecord(@PathVariable Integer id, @Valid @RequestBody MedicalRecordDTO medicalRecordDTO) {
-		MedicalRecordDTO updatedMedicalRecord = medicalRecordService.update(id, medicalRecordDTO);
-		return ResponseEntity.ok(updatedMedicalRecord);
+		MedicalRecord updatedMedicalRecord = medicalRecordService.update(id, medicalRecordDTO);
+		return ResponseEntity.ok(convertToDTO(updatedMedicalRecord));
 	}
 
 	@Operation(summary = "Delete a medical record", description = "Deletes a medical record by its ID.")
@@ -116,5 +119,19 @@ public class MedicalRecordController {
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+	}
+	
+	private MedicalRecordDTO convertToDTO(MedicalRecord medicalRecord) {
+		MedicalRecordDTO dto = new MedicalRecordDTO();
+		dto.setId(medicalRecord.getId());
+		if (medicalRecord.getPatient() != null) {
+			dto.setPatientId(medicalRecord.getPatient().getId());
+		}
+		dto.setRecordDate(medicalRecord.getRecordDate());
+		dto.setDescription(medicalRecord.getDescription());
+		dto.setFilePath(medicalRecord.getFilePath());
+		dto.setCreatedAt(medicalRecord.getCreatedAt());
+		dto.setUpdatedAt(medicalRecord.getUpdatedAt());
+		return dto;
 	}
 }
