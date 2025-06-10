@@ -2,25 +2,26 @@ package com.vbatecan.patient_management_system.service;
 
 import com.vbatecan.patient_management_system.dto.AppointmentDTO;
 import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
+import com.vbatecan.patient_management_system.model.Appointment; // Added import
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
 public interface AppointmentService {
-	AppointmentDTO save(AppointmentDTO appointmentDTO);
+	Appointment save(AppointmentDTO appointmentDTO); // Changed return type
 
-	Optional<AppointmentDTO> findById(Integer id);
+	Optional<Appointment> findById(Integer id); // Changed return type
 
-	Page<AppointmentDTO> findAll(Pageable pageable);
+	Page<Appointment> findAll(Pageable pageable); // Changed return type
 
-	Page<AppointmentDTO> findByPatientId(Integer patientId, Pageable pageable);
+	Page<Appointment> findByPatientId(Integer patientId, Pageable pageable); // Changed return type
 
-	Page<AppointmentDTO> findByDoctorId(Integer doctorId, Pageable pageable);
+	Page<Appointment> findByDoctorId(Integer doctorId, Pageable pageable); // Changed return type
 
-	AppointmentDTO update(Integer id, AppointmentDTO appointmentDTO);
+	Appointment update(Integer id, AppointmentDTO appointmentDTO); // Changed return type
 
-	AppointmentDTO updateAppointmentStatus(Integer id, String status);
+	Appointment updateAppointmentStatus(Integer id, String status); // Changed return type
 
 	void delete(Integer id) throws ResourceNotFoundException;
 }
