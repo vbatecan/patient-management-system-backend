@@ -26,11 +26,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 	private final PatientRepository patientRepository;
 	private final DoctorRepository doctorRepository;
 
-	// Remove unnecessary comments. AI!
-
 	@Override
 	@Transactional
-	public Appointment save(AppointmentDTO appointmentDTO) { // Changed return type
+	public Appointment save(AppointmentDTO appointmentDTO) {
 		try {
 			Appointment appointment = convertToEntity(appointmentDTO);
 
@@ -42,7 +40,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 			}
 
 			Appointment savedAppointment = appointmentRepository.save(appointment);
-			return savedAppointment; // Return entity
+			return savedAppointment;
 		} catch ( ResourceNotFoundException e ) {
 			throw new ResourceNotFoundException("Error saving appointment: " + e.getMessage());
 		} catch ( IllegalArgumentException e ) {
@@ -51,34 +49,34 @@ public class AppointmentServiceImpl implements AppointmentService {
 	}
 
 	@Override
-	public Optional<Appointment> findById(Integer id) { // Changed return type
-		return appointmentRepository.findById(id); // Return Optional<Entity>
+	public Optional<Appointment> findById(Integer id) {
+		return appointmentRepository.findById(id);
 	}
 
 	@Override
-	public Page<Appointment> findAll(Pageable pageable) { // Changed return type
-		return appointmentRepository.findAll(pageable); // Return Page<Entity>
+	public Page<Appointment> findAll(Pageable pageable) {
+		return appointmentRepository.findAll(pageable);
 	}
 
 	@Override
-	public Page<Appointment> findByPatientId(Integer patientId, Pageable pageable) { // Changed return type
+	public Page<Appointment> findByPatientId(Integer patientId, Pageable pageable) {
 		if ( !patientRepository.existsById(patientId) ) {
 			throw new ResourceNotFoundException("Patient not found with id: " + patientId);
 		}
-		return appointmentRepository.findByPatientId(patientId, pageable); // Return Page<Entity>
+		return appointmentRepository.findByPatientId(patientId, pageable);
 	}
 
 	@Override
-	public Page<Appointment> findByDoctorId(Integer doctorId, Pageable pageable) { // Changed return type
+	public Page<Appointment> findByDoctorId(Integer doctorId, Pageable pageable) {
 		if ( !doctorRepository.existsById(doctorId) ) {
 			throw new ResourceNotFoundException("Doctor not found with id: " + doctorId);
 		}
-		return appointmentRepository.findByDoctorId(doctorId, pageable); // Return Page<Entity>
+		return appointmentRepository.findByDoctorId(doctorId, pageable);
 	}
 
 	@Override
 	@Transactional
-	public Appointment update(Integer id, AppointmentDTO appointmentDTO) { // Changed return type
+	public Appointment update(Integer id, AppointmentDTO appointmentDTO) {
 		Appointment existingAppointment = appointmentRepository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id: " + id));
 
@@ -105,7 +103,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 	@Override
 	@Transactional
-	public Appointment updateAppointmentStatus(Integer id, String status) { // Changed return type
+	public Appointment updateAppointmentStatus(Integer id, String status) {
 		Appointment existingAppointment = appointmentRepository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id: " + id));
 		existingAppointment.setStatus(status);
