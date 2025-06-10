@@ -1,14 +1,13 @@
 package com.vbatecan.patient_management_system.service.impl;
 
 import com.vbatecan.patient_management_system.dto.UserAccountDTO;
-import com.vbatecan.patient_management_system.dto.input.UserAccountInput;
 import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
 import com.vbatecan.patient_management_system.model.UserAccount;
 import com.vbatecan.patient_management_system.repository.UserAccountRepository;
 import com.vbatecan.patient_management_system.service.UserAccountService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,14 +16,11 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserAccountServiceImpl implements UserAccountService {
 
     private final UserAccountRepository userAccountRepository;
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
-    public UserAccountServiceImpl(UserAccountRepository userAccountRepository) {
-        this.userAccountRepository = userAccountRepository;
-    }
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
