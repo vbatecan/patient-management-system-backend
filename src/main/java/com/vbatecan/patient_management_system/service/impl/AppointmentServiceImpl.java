@@ -7,7 +7,7 @@ import com.vbatecan.patient_management_system.model.Doctor;
 import com.vbatecan.patient_management_system.model.Patient;
 import com.vbatecan.patient_management_system.repository.AppointmentRepository;
 import com.vbatecan.patient_management_system.repository.DoctorRepository;
-import com.vbatecan.patient_management_system.repository.PatientRepository; // Completed import
+import com.vbatecan.patient_management_system.repository.PatientRepository;
 import com.vbatecan.patient_management_system.service.AppointmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,6 +25,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 	private final AppointmentRepository appointmentRepository;
 	private final PatientRepository patientRepository;
 	private final DoctorRepository doctorRepository;
+
+	// Remove unnecessary comments. AI!
 
 	@Override
 	@Transactional
@@ -98,7 +100,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 		existingAppointment.setUpdatedAt(LocalDateTime.now());
 
 		Appointment updatedAppointment = appointmentRepository.save(existingAppointment);
-		return updatedAppointment; // Return entity
+		return updatedAppointment;
 	}
 
 	@Override
@@ -108,8 +110,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 			.orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id: " + id));
 		existingAppointment.setStatus(status);
 		existingAppointment.setUpdatedAt(LocalDateTime.now());
-		Appointment updatedAppointment = appointmentRepository.save(existingAppointment);
-		return updatedAppointment; // Return entity
+		return appointmentRepository.save(existingAppointment);
 	}
 
 
@@ -120,27 +121,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 			throw new ResourceNotFoundException("Appointment not found with id: " + id);
 		}
 		appointmentRepository.deleteById(id);
-	}
-
-	private AppointmentDTO convertToDTO(Appointment appointment) {
-		AppointmentDTO dto = new AppointmentDTO();
-
-		dto.setId(appointment.getId());
-
-		if ( appointment.getPatient() != null ) {
-			dto.setPatientId(appointment.getPatient().getId());
-		}
-
-		if ( appointment.getDoctor() != null ) {
-			dto.setDoctorId(appointment.getDoctor().getId());
-		}
-
-		dto.setAppointmentDate(appointment.getAppointmentDate());
-		dto.setReason(appointment.getReason());
-		dto.setStatus(appointment.getStatus());
-		dto.setCreatedAt(appointment.getCreatedAt());
-		dto.setUpdatedAt(appointment.getUpdatedAt());
-		return dto;
 	}
 
 	private Appointment convertToEntity(AppointmentDTO appointmentDTO) throws ResourceNotFoundException {
