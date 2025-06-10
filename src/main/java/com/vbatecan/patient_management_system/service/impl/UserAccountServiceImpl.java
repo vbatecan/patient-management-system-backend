@@ -1,6 +1,7 @@
 package com.vbatecan.patient_management_system.service.impl;
 
 import com.vbatecan.patient_management_system.dto.UserAccountDTO;
+import com.vbatecan.patient_management_system.dto.input.UserAccountInput;
 import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
 import com.vbatecan.patient_management_system.model.UserAccount;
 import com.vbatecan.patient_management_system.repository.UserAccountRepository;
@@ -28,22 +29,10 @@ public class UserAccountServiceImpl implements UserAccountService {
 
 	@Override
 	@Transactional
-	public UserAccountDTO save(UserAccountDTO userAccountDTO) {
+	public UserAccountDTO save(UserAccountInput userAccountDTO) {
 		if ( userAccountRepository.findByUsername(userAccountDTO.getUsername()).isPresent() ) {
 			throw new IllegalArgumentException("Username already exists: " + userAccountDTO.getUsername());
 		}
-
-		UserAccount userAccount = convertToEntity(userAccountDTO);
-		userAccount.setPassword(passwordEncoder.encode(userAccount.getPassword()));
-		userAccount.setCreatedAt(LocalDateTime.now());
-		userAccount.setUpdatedAt(LocalDateTime.now());
-
-		if ( userAccountDTO.getRole() != null ) {
-			userAccount.setRole(userAccountDTO.getRole());
-		}
-
-		UserAccount savedUserAccount = userAccountRepository.save(userAccount);
-		return convertToDTO(savedUserAccount);
 	}
 
 	@Override
@@ -64,27 +53,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 	@Override
 	@Transactional
 	public UserAccountDTO update(Integer id, UserAccountDTO userAccountDTO) {
-		UserAccount existingUserAccount = userAccountRepository.findById(id)
-			.orElseThrow(() -> new ResourceNotFoundException("UserAccount not found with id: " + id));
 
-		if ( userAccountDTO.getUsername() != null && !existingUserAccount.getUsername().equals(userAccountDTO.getUsername()) ) {
-			if ( userAccountRepository.findByUsername(userAccountDTO.getUsername()).isPresent() ) {
-				throw new IllegalArgumentException("Username already exists: " + userAccountDTO.getUsername());
-			}
-			existingUserAccount.setUsername(userAccountDTO.getUsername());
-		}
-
-		if ( userAccountDTO.getPassword() != null && !userAccountDTO.getPassword().isEmpty() ) {
-			existingUserAccount.setPassword(passwordEncoder.encode(userAccountDTO.getPassword()));
-		}
-
-		if ( userAccountDTO.getRole() != null ) {
-			existingUserAccount.setRole(userAccountDTO.getRole());
-		}
-		existingUserAccount.setUpdatedAt(LocalDateTime.now());
-
-		UserAccount updatedUserAccount = userAccountRepository.save(existingUserAccount);
-		return convertToDTO(updatedUserAccount);
 	}
 
 	@Override

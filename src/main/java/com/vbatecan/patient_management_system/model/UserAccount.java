@@ -1,5 +1,6 @@
 package com.vbatecan.patient_management_system.model;
 
+import com.vbatecan.patient_management_system.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,8 +35,4 @@ public class UserAccount {
 
 	@Column(name = "updated_at")
 	private LocalDateTime updatedAt;
-
-	public enum Role {
-		GUEST, PATIENT, DOCTOR, ADMIN
-	}
-} 
+}
