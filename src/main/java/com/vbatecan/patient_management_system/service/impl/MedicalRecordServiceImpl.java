@@ -25,35 +25,34 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 
 	@Override
 	@Transactional
-	public MedicalRecordDTO save(MedicalRecordDTO medicalRecordDTO) {
+	public MedicalRecord save(MedicalRecordDTO medicalRecordDTO) {
 		MedicalRecord medicalRecord = convertToEntity(medicalRecordDTO);
 		medicalRecord.setCreatedAt(LocalDateTime.now());
 		medicalRecord.setUpdatedAt(LocalDateTime.now());
-		MedicalRecord savedMedicalRecord = medicalRecordRepository.save(medicalRecord);
-		return convertToDTO(savedMedicalRecord);
+		return medicalRecordRepository.save(medicalRecord);
 	}
 
 	@Override
-	public Optional<MedicalRecordDTO> findById(Integer id) {
-		return medicalRecordRepository.findById(id).map(this::convertToDTO);
+	public Optional<MedicalRecord> findById(Integer id) {
+		return medicalRecordRepository.findById(id);
 	}
 
 	@Override
-	public Page<MedicalRecordDTO> findAll(Pageable pageable) {
-		return medicalRecordRepository.findAll(pageable).map(this::convertToDTO);
+	public Page<MedicalRecord> findAll(Pageable pageable) {
+		return medicalRecordRepository.findAll(pageable);
 	}
 
 	@Override
-	public Page<MedicalRecordDTO> findByPatientId(Integer patientId, Pageable pageable) {
+	public Page<MedicalRecord> findByPatientId(Integer patientId, Pageable pageable) {
 		if ( !patientRepository.existsById(patientId) ) {
 			throw new ResourceNotFoundException("Patient not found with id: " + patientId);
 		}
-		return medicalRecordRepository.findByPatientId(patientId, pageable).map(this::convertToDTO);
+		return medicalRecordRepository.findByPatientId(patientId, pageable);
 	}
 
 	@Override
 	@Transactional
-	public MedicalRecordDTO update(Integer id, MedicalRecordDTO medicalRecordDTO) {
+	public MedicalRecord update(Integer id, MedicalRecordDTO medicalRecordDTO) {
 		MedicalRecord existingMedicalRecord = medicalRecordRepository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("MedicalRecord not found with id: " + id));
 
@@ -63,16 +62,17 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 		existingMedicalRecord.setUpdatedAt(LocalDateTime.now());
 
 		if ( medicalRecordDTO.getPatientId() != null ) {
-			Patient patient = patientRepository.findById(medicalRecordDTO.getPatientId())
-				.orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + medicalRecordDTO.getPatientId()));
-			existingMedicalRecord.setPatient(patient);
+			// Check if patientId has changed
+			if (existingMedicalRecord.getPatient() == null || !existingMedicalRecord.getPatient().getId().equals(medicalRecordDTO.getPatientId())) {
+				Patient patient = patientRepository.findById(medicalRecordDTO.getPatientId())
+					.orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + medicalRecordDTO.getPatientId()));
+				existingMedicalRecord.setPatient(patient);
+			}
 		} else {
 			throw new IllegalArgumentException("Patient ID cannot be null for updating medical record's patient.");
 		}
 
-
-		MedicalRecord updatedMedicalRecord = medicalRecordRepository.save(existingMedicalRecord);
-		return convertToDTO(updatedMedicalRecord);
+		return medicalRecordRepository.save(existingMedicalRecord);
 	}
 
 	@Override
@@ -84,6 +84,8 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 		medicalRecordRepository.deleteById(id);
 	}
 
+	// This DTO conversion method is kept for potential internal use or by other layers,
+	// but it's not used by the public methods of this service anymore.
 	private MedicalRecordDTO convertToDTO(MedicalRecord medicalRecord) {
 		MedicalRecordDTO dto = new MedicalRecordDTO();
 		dto.setId(medicalRecord.getId());
@@ -109,6 +111,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 		medicalRecord.setRecordDate(medicalRecordDTO.getRecordDate());
 		medicalRecord.setDescription(medicalRecordDTO.getDescription());
 		medicalRecord.setFilePath(medicalRecordDTO.getFilePath());
+		// Timestamps (createdAt, updatedAt) are handled in save/update methods.
 		return medicalRecord;
 	}
 }

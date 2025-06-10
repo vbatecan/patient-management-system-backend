@@ -25,27 +25,26 @@ public class PatientServiceImpl implements PatientService {
 
 	@Override
 	@Transactional
-	public PatientDTO save(PatientDTO patientDTO) {
+	public Patient save(PatientDTO patientDTO) {
 		Patient patient = convertToEntity(patientDTO);
 		patient.setCreatedAt(LocalDateTime.now());
 		patient.setUpdatedAt(LocalDateTime.now());
-		Patient savedPatient = patientRepository.save(patient);
-		return convertToDTO(savedPatient);
+		return patientRepository.save(patient);
 	}
 
 	@Override
-	public Optional<PatientDTO> findById(Integer id) {
-		return patientRepository.findById(id).map(this::convertToDTO);
+	public Optional<Patient> findById(Integer id) {
+		return patientRepository.findById(id);
 	}
 
 	@Override
-	public Page<PatientDTO> findAll(Pageable pageable) {
-		return patientRepository.findAll(pageable).map(this::convertToDTO);
+	public Page<Patient> findAll(Pageable pageable) {
+		return patientRepository.findAll(pageable);
 	}
 
 	@Override
 	@Transactional
-	public PatientDTO update(Integer id, PatientDTO patientDTO) {
+	public Patient update(Integer id, PatientDTO patientDTO) {
 		Patient existingPatient = patientRepository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + id));
 
@@ -60,15 +59,18 @@ public class PatientServiceImpl implements PatientService {
 		existingPatient.setUpdatedAt(LocalDateTime.now());
 
 		if ( patientDTO.getUserAccountId() != null ) {
-			UserAccount userAccount = userAccountRepository.findById(patientDTO.getUserAccountId())
-				.orElseThrow(() -> new ResourceNotFoundException("UserAccount not found with id: " + patientDTO.getUserAccountId()));
-			existingPatient.setUserAccount(userAccount);
+			// Check if userAccountId has changed or was null
+			if (existingPatient.getUserAccount() == null || !existingPatient.getUserAccount().getId().equals(patientDTO.getUserAccountId())) {
+				UserAccount userAccount = userAccountRepository.findById(patientDTO.getUserAccountId())
+					.orElseThrow(() -> new ResourceNotFoundException("UserAccount not found with id: " + patientDTO.getUserAccountId()));
+				existingPatient.setUserAccount(userAccount);
+			}
 		} else {
+			// If userAccountId is explicitly null in DTO, disassociate UserAccount
 			existingPatient.setUserAccount(null);
 		}
 
-		Patient updatedPatient = patientRepository.save(existingPatient);
-		return convertToDTO(updatedPatient);
+		return patientRepository.save(existingPatient);
 	}
 
 	@Override
@@ -80,6 +82,8 @@ public class PatientServiceImpl implements PatientService {
 		patientRepository.deleteById(id);
 	}
 
+	// This DTO conversion method is kept for potential internal use or by other layers,
+	// but it's not used by the public methods of this service anymore.
 	private PatientDTO convertToDTO(Patient patient) {
 		PatientDTO dto = new PatientDTO();
 		dto.setId(patient.getId());
@@ -106,6 +110,8 @@ public class PatientServiceImpl implements PatientService {
 				.orElseThrow(() -> new ResourceNotFoundException("UserAccount not found with id: " + patientDTO.getUserAccountId()));
 			patient.setUserAccount(userAccount);
 		}
+		// If userAccountId is null in DTO, patient.userAccount remains null by default.
+
 		patient.setFirstName(patientDTO.getFirstName());
 		patient.setLastName(patientDTO.getLastName());
 		patient.setDateOfBirth(patientDTO.getDateOfBirth());
@@ -114,6 +120,7 @@ public class PatientServiceImpl implements PatientService {
 		patient.setEmail(patientDTO.getEmail());
 		patient.setAddress(patientDTO.getAddress());
 		patient.setEmergencyContact(patientDTO.getEmergencyContact());
+		// Timestamps (createdAt, updatedAt) are handled in save/update methods.
 		return patient;
 	}
 }

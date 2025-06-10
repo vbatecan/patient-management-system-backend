@@ -25,7 +25,7 @@ public class DoctorServiceImpl implements DoctorService {
 
 	@Override
 	@Transactional
-	public DoctorDTO save(DoctorDTO doctorDTO) {
+	public Doctor save(DoctorDTO doctorDTO) {
 		if ( doctorDTO.getUserAccountId() != null ) {
 			UserAccount ua = userAccountRepository.findById(doctorDTO.getUserAccountId())
 				.orElseThrow(() -> new ResourceNotFoundException("UserAccount not found with id: " + doctorDTO.getUserAccountId()));
@@ -39,34 +39,33 @@ public class DoctorServiceImpl implements DoctorService {
 		Doctor doctor = convertToEntity(doctorDTO);
 		doctor.setCreatedAt(LocalDateTime.now());
 		doctor.setUpdatedAt(LocalDateTime.now());
-		Doctor savedDoctor = doctorRepository.save(doctor);
-		return convertToDTO(savedDoctor);
+		return doctorRepository.save(doctor);
 	}
 
 	@Override
-	public Optional<DoctorDTO> findById(Integer id) {
-		return doctorRepository.findById(id).map(this::convertToDTO);
+	public Optional<Doctor> findById(Integer id) {
+		return doctorRepository.findById(id);
 	}
 
 	@Override
-	public Optional<DoctorDTO> findByUserAccountId(Integer userAccountId) {
-		return doctorRepository.findByUserAccountId(userAccountId).map(this::convertToDTO);
+	public Optional<Doctor> findByUserAccountId(Integer userAccountId) {
+		return doctorRepository.findByUserAccountId(userAccountId);
 	}
 
 	@Override
-	public Optional<DoctorDTO> findByEmail(String email) {
-		return doctorRepository.findByEmail(email).map(this::convertToDTO);
+	public Optional<Doctor> findByEmail(String email) {
+		return doctorRepository.findByEmail(email);
 	}
 
 
 	@Override
-	public Page<DoctorDTO> findAll(Pageable pageable) {
-		return doctorRepository.findAll(pageable).map(this::convertToDTO);
+	public Page<Doctor> findAll(Pageable pageable) {
+		return doctorRepository.findAll(pageable);
 	}
 
 	@Override
 	@Transactional
-	public DoctorDTO update(Integer id, DoctorDTO doctorDTO) {
+	public Doctor update(Integer id, DoctorDTO doctorDTO) {
 		Doctor existingDoctor = doctorRepository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("Doctor not found with id: " + id));
 
@@ -85,11 +84,13 @@ public class DoctorServiceImpl implements DoctorService {
 			}
 			existingDoctor.setUserAccount(userAccount);
 		} else {
+			// Retain existing UserAccount if not provided in DTO, or handle as per business logic.
+			// For this example, we'll throw an error if it's null, assuming UserAccountId is mandatory for updates too.
+			// If UserAccount can be disassociated, this logic would change.
 			throw new IllegalArgumentException("UserAccountId cannot be null when updating a Doctor.");
 		}
 
-		Doctor updatedDoctor = doctorRepository.save(existingDoctor);
-		return convertToDTO(updatedDoctor);
+		return doctorRepository.save(existingDoctor);
 	}
 
 	@Override
@@ -101,6 +102,8 @@ public class DoctorServiceImpl implements DoctorService {
 		doctorRepository.deleteById(id);
 	}
 
+	// This DTO conversion method is kept for potential internal use or by other layers,
+	// but it's not used by the public methods of this service anymore.
 	private DoctorDTO convertToDTO(Doctor doctor) {
 		DoctorDTO dto = new DoctorDTO();
 		dto.setId(doctor.getId());
@@ -119,8 +122,12 @@ public class DoctorServiceImpl implements DoctorService {
 
 	private Doctor convertToEntity(DoctorDTO doctorDTO) {
 		Doctor doctor = new Doctor();
+		// UserAccount is validated and set in the save/update methods before calling this.
+		// However, ensuring it's set here from DTO is still good practice.
 		if ( doctorDTO.getUserAccountId() == null ) {
-			throw new IllegalArgumentException("UserAccountId is required for a Doctor.");
+			// This check might be redundant if save/update methods already validate,
+			// but included for robustness of this private method.
+			throw new IllegalArgumentException("UserAccountId is required for a Doctor entity.");
 		}
 		UserAccount userAccount = userAccountRepository.findById(doctorDTO.getUserAccountId())
 			.orElseThrow(() -> new ResourceNotFoundException("UserAccount not found with id: " + doctorDTO.getUserAccountId()));
@@ -131,6 +138,7 @@ public class DoctorServiceImpl implements DoctorService {
 		doctor.setSpecialty(doctorDTO.getSpecialty());
 		doctor.setContactNumber(doctorDTO.getContactNumber());
 		doctor.setEmail(doctorDTO.getEmail());
+		// Timestamps (createdAt, updatedAt) are handled in save/update methods.
 		return doctor;
 	}
 }
