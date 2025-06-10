@@ -20,96 +20,80 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PrescriptionServiceImpl implements PrescriptionService {
 
-	private final PrescriptionRepository prescriptionRepository;
-	private final AppointmentRepository appointmentRepository;
+    private final PrescriptionRepository prescriptionRepository;
+    private final AppointmentRepository appointmentRepository;
 
-	@Override
-	@Transactional
-	public PrescriptionDTO save(PrescriptionDTO prescriptionDTO) {
-		Prescription prescription = convertToEntity(prescriptionDTO);
-		prescription.setCreatedAt(LocalDateTime.now());
-		prescription.setUpdatedAt(LocalDateTime.now());
-		Prescription savedPrescription = prescriptionRepository.save(prescription);
-		return convertToDTO(savedPrescription);
-	}
+    @Override
+    @Transactional
+    public Prescription save(PrescriptionDTO prescriptionDTO) {
+        Prescription prescription = convertToEntity(prescriptionDTO);
+        prescription.setCreatedAt(LocalDateTime.now());
+        prescription.setUpdatedAt(LocalDateTime.now());
+        return prescriptionRepository.save(prescription);
+    }
 
-	@Override
-	public Optional<PrescriptionDTO> findById(Integer id) {
-		return prescriptionRepository.findById(id).map(this::convertToDTO);
-	}
+    @Override
+    public Optional<Prescription> findById(Integer id) {
+        return prescriptionRepository.findById(id);
+    }
 
-	@Override
-	public Page<PrescriptionDTO> findAll(Pageable pageable) {
-		return prescriptionRepository.findAll(pageable).map(this::convertToDTO);
-	}
+    @Override
+    public Page<Prescription> findAll(Pageable pageable) {
+        return prescriptionRepository.findAll(pageable);
+    }
 
-	@Override
-	public Page<PrescriptionDTO> findByAppointmentId(Integer appointmentId, Pageable pageable) {
-		if ( !appointmentRepository.existsById(appointmentId) ) {
-			throw new ResourceNotFoundException("Appointment not found with id: " + appointmentId);
-		}
-		return prescriptionRepository.findByAppointmentId(appointmentId, pageable).map(this::convertToDTO);
-	}
+    @Override
+    public Page<Prescription> findByAppointmentId(Integer appointmentId, Pageable pageable) {
+        if (!appointmentRepository.existsById(appointmentId)) {
+            throw new ResourceNotFoundException("Appointment not found with id: " + appointmentId);
+        }
+        return prescriptionRepository.findByAppointmentId(appointmentId, pageable);
+    }
 
-	@Override
-	@Transactional
-	public PrescriptionDTO update(Integer id, PrescriptionDTO prescriptionDTO) {
-		Prescription existingPrescription = prescriptionRepository.findById(id)
-			.orElseThrow(() -> new ResourceNotFoundException("Prescription not found with id: " + id));
+    @Override
+    @Transactional
+    public Prescription update(Integer id, PrescriptionDTO prescriptionDTO) {
+        Prescription existingPrescription = prescriptionRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Prescription not found with id: " + id));
 
-		if ( prescriptionDTO.getAppointmentId() != null ) {
-			Appointment appointment = appointmentRepository.findById(prescriptionDTO.getAppointmentId())
-				.orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id: " + prescriptionDTO.getAppointmentId()));
-			existingPrescription.setAppointment(appointment);
-		} else {
-			throw new IllegalArgumentException("AppointmentId cannot be null when updating a Prescription.");
-		}
+        if (prescriptionDTO.getAppointmentId() != null) {
+            Appointment appointment = appointmentRepository.findById(prescriptionDTO.getAppointmentId())
+                .orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id: " + prescriptionDTO.getAppointmentId()));
+            existingPrescription.setAppointment(appointment);
+        } else {
+            throw new IllegalArgumentException("AppointmentId cannot be null when updating a Prescription.");
+        }
 
-		existingPrescription.setMedication(prescriptionDTO.getMedication());
-		existingPrescription.setDosage(prescriptionDTO.getDosage());
-		existingPrescription.setInstructions(prescriptionDTO.getInstructions());
-		existingPrescription.setUpdatedAt(LocalDateTime.now());
+        existingPrescription.setMedication(prescriptionDTO.getMedication());
+        existingPrescription.setDosage(prescriptionDTO.getDosage());
+        existingPrescription.setInstructions(prescriptionDTO.getInstructions());
+        existingPrescription.setUpdatedAt(LocalDateTime.now());
 
-		Prescription updatedPrescription = prescriptionRepository.save(existingPrescription);
-		return convertToDTO(updatedPrescription);
-	}
+        return prescriptionRepository.save(existingPrescription);
+    }
 
-	@Override
-	@Transactional
-	public void delete(Integer id) {
-		if ( !prescriptionRepository.existsById(id) ) {
-			throw new ResourceNotFoundException("Prescription not found with id: " + id);
-		}
-		prescriptionRepository.deleteById(id);
-	}
+    @Override
+    @Transactional
+    public void delete(Integer id) {
+        if (!prescriptionRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Prescription not found with id: " + id);
+        }
+        prescriptionRepository.deleteById(id);
+    }
 
-	private PrescriptionDTO convertToDTO(Prescription prescription) {
-		PrescriptionDTO dto = new PrescriptionDTO();
-		dto.setId(prescription.getId());
-		if ( prescription.getAppointment() != null ) {
-			dto.setAppointmentId(prescription.getAppointment().getId());
-		}
-		dto.setMedication(prescription.getMedication());
-		dto.setDosage(prescription.getDosage());
-		dto.setInstructions(prescription.getInstructions());
-		dto.setCreatedAt(prescription.getCreatedAt());
-		dto.setUpdatedAt(prescription.getUpdatedAt());
-		return dto;
-	}
+    private Prescription convertToEntity(PrescriptionDTO prescriptionDTO) {
+        Prescription prescription = new Prescription();
 
-	private Prescription convertToEntity(PrescriptionDTO prescriptionDTO) {
-		Prescription prescription = new Prescription();
+        if (prescriptionDTO.getAppointmentId() == null) {
+            throw new IllegalArgumentException("AppointmentId is required for a Prescription.");
+        }
+        Appointment appointment = appointmentRepository.findById(prescriptionDTO.getAppointmentId())
+            .orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id: " + prescriptionDTO.getAppointmentId()));
+        prescription.setAppointment(appointment);
 
-		if ( prescriptionDTO.getAppointmentId() == null ) {
-			throw new IllegalArgumentException("AppointmentId is required for a Prescription.");
-		}
-		Appointment appointment = appointmentRepository.findById(prescriptionDTO.getAppointmentId())
-			.orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id: " + prescriptionDTO.getAppointmentId()));
-		prescription.setAppointment(appointment);
-
-		prescription.setMedication(prescriptionDTO.getMedication());
-		prescription.setDosage(prescriptionDTO.getDosage());
-		prescription.setInstructions(prescriptionDTO.getInstructions());
-		return prescription;
-	}
+        prescription.setMedication(prescriptionDTO.getMedication());
+        prescription.setDosage(prescriptionDTO.getDosage());
+        prescription.setInstructions(prescriptionDTO.getInstructions());
+        return prescription;
+    }
 }
