@@ -2,6 +2,7 @@ package com.vbatecan.patient_management_system.controller;
 
 import com.vbatecan.patient_management_system.dto.PrescriptionDTO;
 import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
+import com.vbatecan.patient_management_system.model.Prescription;
 import com.vbatecan.patient_management_system.service.PrescriptionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -38,8 +39,8 @@ public class PrescriptionController {
     })
     @PostMapping
     public ResponseEntity<PrescriptionDTO> createPrescription(@Valid @RequestBody PrescriptionDTO prescriptionDTO) {
-        PrescriptionDTO savedPrescription = prescriptionService.save(prescriptionDTO);
-        return new ResponseEntity<>(savedPrescription, HttpStatus.CREATED);
+        Prescription savedPrescription = prescriptionService.save(prescriptionDTO);
+        return new ResponseEntity<>(convertToDTO(savedPrescription), HttpStatus.CREATED);
     }
 
     @Operation(summary = "Get a prescription by ID", description = "Retrieves a specific prescription by its unique ID.")
@@ -51,9 +52,9 @@ public class PrescriptionController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<PrescriptionDTO> getPrescriptionById(@PathVariable Integer id) {
-        Optional<PrescriptionDTO> prescriptionDTOOptional = prescriptionService.findById(id);
-        return prescriptionDTOOptional
-                .map(ResponseEntity::ok)
+        Optional<Prescription> prescriptionOptional = prescriptionService.findById(id);
+        return prescriptionOptional
+                .map(prescription -> ResponseEntity.ok(convertToDTO(prescription)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -64,8 +65,9 @@ public class PrescriptionController {
     })
     @GetMapping
     public ResponseEntity<Page<PrescriptionDTO>> getAllPrescriptions(Pageable pageable) {
-        Page<PrescriptionDTO> prescriptions = prescriptionService.findAll(pageable);
-        return ResponseEntity.ok(prescriptions);
+        Page<Prescription> prescriptions = prescriptionService.findAll(pageable);
+        Page<PrescriptionDTO> prescriptionDTOs = prescriptions.map(this::convertToDTO);
+        return ResponseEntity.ok(prescriptionDTOs);
     }
 
     @Operation(summary = "Get prescriptions by Appointment ID", description = "Retrieves a paginated list of prescriptions for a specific appointment.")
@@ -77,8 +79,9 @@ public class PrescriptionController {
     })
     @GetMapping("/appointment/{appointmentId}")
     public ResponseEntity<Page<PrescriptionDTO>> getPrescriptionsByAppointmentId(@PathVariable Integer appointmentId, Pageable pageable) {
-        Page<PrescriptionDTO> prescriptions = prescriptionService.findByAppointmentId(appointmentId, pageable);
-        return ResponseEntity.ok(prescriptions);
+        Page<Prescription> prescriptions = prescriptionService.findByAppointmentId(appointmentId, pageable);
+        Page<PrescriptionDTO> prescriptionDTOs = prescriptions.map(this::convertToDTO);
+        return ResponseEntity.ok(prescriptionDTOs);
     }
 
     @Operation(summary = "Update an existing prescription", description = "Updates the details of an existing prescription by its ID.")
@@ -92,8 +95,8 @@ public class PrescriptionController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<PrescriptionDTO> updatePrescription(@PathVariable Integer id, @Valid @RequestBody PrescriptionDTO prescriptionDTO) {
-        PrescriptionDTO updatedPrescription = prescriptionService.update(id, prescriptionDTO);
-        return ResponseEntity.ok(updatedPrescription);
+        Prescription updatedPrescription = prescriptionService.update(id, prescriptionDTO);
+        return ResponseEntity.ok(convertToDTO(updatedPrescription));
     }
 
     @Operation(summary = "Delete a prescription", description = "Deletes a prescription by its ID.")
@@ -116,5 +119,19 @@ public class PrescriptionController {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+    
+    private PrescriptionDTO convertToDTO(Prescription prescription) {
+        PrescriptionDTO dto = new PrescriptionDTO();
+        dto.setId(prescription.getId());
+        if (prescription.getAppointment() != null) {
+            dto.setAppointmentId(prescription.getAppointment().getId());
+        }
+        dto.setMedication(prescription.getMedication());
+        dto.setDosage(prescription.getDosage());
+        dto.setInstructions(prescription.getInstructions());
+        dto.setCreatedAt(prescription.getCreatedAt());
+        dto.setUpdatedAt(prescription.getUpdatedAt());
+        return dto;
     }
 }

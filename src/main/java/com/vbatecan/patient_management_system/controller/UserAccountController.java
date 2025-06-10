@@ -2,6 +2,7 @@ package com.vbatecan.patient_management_system.controller;
 
 import com.vbatecan.patient_management_system.dto.UserAccountDTO;
 import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
+import com.vbatecan.patient_management_system.model.UserAccount;
 import com.vbatecan.patient_management_system.service.UserAccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -36,8 +37,8 @@ public class UserAccountController {
     })
     @PostMapping
     public ResponseEntity<UserAccountDTO> createUserAccount(@Valid @RequestBody UserAccountDTO userAccountDTO) {
-        UserAccountDTO savedUserAccount = userAccountService.save(userAccountDTO);
-        return new ResponseEntity<>(savedUserAccount, HttpStatus.CREATED);
+        UserAccount savedUserAccount = userAccountService.save(userAccountDTO);
+        return new ResponseEntity<>(convertToDTO(savedUserAccount), HttpStatus.CREATED);
     }
 
     @Operation(summary = "Get a user account by ID", description = "Retrieves a specific user account by its unique ID. Password is not included in the response.")
@@ -49,9 +50,9 @@ public class UserAccountController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<UserAccountDTO> getUserAccountById(@PathVariable Integer id) {
-        Optional<UserAccountDTO> userAccountDTOOptional = userAccountService.findById(id);
-        return userAccountDTOOptional
-                .map(ResponseEntity::ok)
+        Optional<UserAccount> userAccountOptional = userAccountService.findById(id);
+        return userAccountOptional
+                .map(userAccount -> ResponseEntity.ok(convertToDTOWithoutPassword(userAccount)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -64,9 +65,9 @@ public class UserAccountController {
     })
     @GetMapping("/username/{username}")
     public ResponseEntity<UserAccountDTO> getUserAccountByUsername(@PathVariable String username) {
-        Optional<UserAccountDTO> userAccountDTOOptional = userAccountService.findByUsername(username);
-        return userAccountDTOOptional
-                .map(ResponseEntity::ok)
+        Optional<UserAccount> userAccountOptional = userAccountService.findByUsername(username);
+        return userAccountOptional
+                .map(userAccount -> ResponseEntity.ok(convertToDTOWithoutPassword(userAccount)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -77,8 +78,9 @@ public class UserAccountController {
     })
     @GetMapping
     public ResponseEntity<Page<UserAccountDTO>> getAllUserAccounts(Pageable pageable) {
-        Page<UserAccountDTO> userAccounts = userAccountService.findAll(pageable);
-        return ResponseEntity.ok(userAccounts);
+        Page<UserAccount> userAccounts = userAccountService.findAll(pageable);
+        Page<UserAccountDTO> userAccountDTOs = userAccounts.map(this::convertToDTOWithoutPassword);
+        return ResponseEntity.ok(userAccountDTOs);
     }
 
     @Operation(summary = "Update an existing user account", description = "Updates the details of an existing user account by its ID. If password is provided, it will be re-hashed.")
@@ -92,8 +94,12 @@ public class UserAccountController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<UserAccountDTO> updateUserAccount(@PathVariable Integer id, @Valid @RequestBody UserAccountDTO userAccountDTO) {
-        UserAccountDTO updatedUserAccount = userAccountService.update(id, userAccountDTO);
-        return ResponseEntity.ok(updatedUserAccount);
+        UserAccount updatedUserAccount = userAccountService.update(id, userAccountDTO);
+        // For update, it's common to return the updated resource without sensitive data like password,
+        // even if the DTO for update might contain it.
+        // If the API contract for update implies returning the password (hashed), then convertToDTO(updatedUserAccount) would be used.
+        // However, typically, GET operations and update responses omit passwords.
+        return ResponseEntity.ok(convertToDTOWithoutPassword(updatedUserAccount));
     }
 
     @Operation(summary = "Delete a user account", description = "Deletes a user account by its ID.")
@@ -116,5 +122,27 @@ public class UserAccountController {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+    
+    private UserAccountDTO convertToDTO(UserAccount userAccount) {
+        UserAccountDTO dto = new UserAccountDTO();
+        dto.setId(userAccount.getId());
+        dto.setUsername(userAccount.getUsername());
+        dto.setPassword(userAccount.getPassword()); // Include password (will be hashed from service)
+        dto.setRole(userAccount.getRole());
+        dto.setCreatedAt(userAccount.getCreatedAt());
+        dto.setUpdatedAt(userAccount.getUpdatedAt());
+        return dto;
+    }
+    
+    private UserAccountDTO convertToDTOWithoutPassword(UserAccount userAccount) {
+        UserAccountDTO dto = new UserAccountDTO();
+        dto.setId(userAccount.getId());
+        dto.setUsername(userAccount.getUsername());
+        // Password is deliberately excluded for security
+        dto.setRole(userAccount.getRole());
+        dto.setCreatedAt(userAccount.getCreatedAt());
+        dto.setUpdatedAt(userAccount.getUpdatedAt());
+        return dto;
     }
 }
