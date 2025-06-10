@@ -8,6 +8,8 @@ import com.vbatecan.patient_management_system.service.UserAccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,11 +17,14 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class UserAccountServiceImpl implements UserAccountService {
 
 	private final UserAccountRepository userAccountRepository;
-	// private final PasswordEncoder passwordEncoder; // TODO: Inject for password hashing
+	 private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+	public UserAccountServiceImpl(UserAccountRepository userAccountRepository) {
+		this.userAccountRepository = userAccountRepository;
+	}
 
 	@Override
 	@Transactional
@@ -29,7 +34,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 		}
 
 		UserAccount userAccount = convertToEntity(userAccountDTO);
-		// TODO: Implement password hashing before saving
+		userAccount.setPassword(passwordEncoder.encode(userAccount.getPassword()));
 		userAccount.setCreatedAt(LocalDateTime.now());
 		userAccount.setUpdatedAt(LocalDateTime.now());
 
@@ -70,8 +75,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 		}
 
 		if ( userAccountDTO.getPassword() != null && !userAccountDTO.getPassword().isEmpty() ) {
-			// TODO: Implement password hashing before saving
-			existingUserAccount.setPassword(userAccountDTO.getPassword());
+			existingUserAccount.setPassword(passwordEncoder.encode(userAccountDTO.getPassword()));
 		}
 
 		if ( userAccountDTO.getRole() != null ) {
