@@ -48,7 +48,7 @@ class AppointmentControllerTest {
         appointmentDTO.setId(1);
         appointmentDTO.setPatientId(1);
         appointmentDTO.setDoctorId(1);
-        appointmentDTO.setAppointmentDateTime(LocalDateTime.now());
+        appointmentDTO.setAppointmentDate(LocalDateTime.now());
         appointmentDTO.setStatus("Scheduled");
         appointmentDTO.setReason("Check-up");
     }
@@ -136,7 +136,7 @@ class AppointmentControllerTest {
         updatedAppointment.setId(1);
         updatedAppointment.setPatientId(1);
         updatedAppointment.setDoctorId(1);
-        updatedAppointment.setAppointmentDateTime(appointmentDTO.getAppointmentDateTime());
+        updatedAppointment.getAppointmentDate(appointmentDTO.getAppointmentDate());
         updatedAppointment.setStatus("Completed");
         updatedAppointment.setReason("Follow-up");
 

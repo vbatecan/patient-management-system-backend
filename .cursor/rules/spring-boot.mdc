@@ -13,15 +13,9 @@ Code Style and Structure
 - Use descriptive method and variable names following camelCase convention.
 - Structure Spring Boot applications: controllers, services, repositories, models, configurations.
 
-Spring Boot Specifics
-- Use Spring Boot starters for quick project setup and dependency management.
-- Implement proper use of annotations (e.g., @SpringBootApplication, @RestController, @Service).
-- Utilize Spring Boot's auto-configuration features effectively.
-- Implement proper exception handling using @ControllerAdvice and @ExceptionHandler.
-
 Naming Conventions
 - Use PascalCase for class names (e.g., UserController, OrderService).
-- Use camelCase for method and variable names (e.g., findUserById, isOrderValid).
+- Use camelCase for method and variable names (e.g., findById, isOrderValid).
 - Use ALL_CAPS for constants (e.g., MAX_RETRY_ATTEMPTS, DEFAULT_PAGE_SIZE).
 
 Java and Spring Boot Usage
@@ -67,11 +61,6 @@ Data Access and ORM
 - Use Spring Data JPA for database operations.
 - Implement proper entity relationships and cascading.
 - Use database migrations with tools like Flyway or Liquibase.
-
-Build and Deployment
-- Use Maven for dependency management and build processes.
-- Implement proper profiles for different environments (dev, test, prod).
-- Use Docker for containerization if applicable.
 
 Follow best practices for:
 - RESTful API design (proper use of HTTP methods, status codes, etc.).
