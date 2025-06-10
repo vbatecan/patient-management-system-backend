@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MedicalRecordRepository extends JpaRepository<MedicalRecord, Integer> {
-    Page<MedicalRecord> findByPatientId(Integer patientId, Pageable pageable);
+	Page<MedicalRecord> findByPatientId(Integer patientId, Pageable pageable);
 }

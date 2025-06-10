@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BillingRepository extends JpaRepository<Billing, Integer> {
-    Page<Billing> findByPatientId(Integer patientId, Pageable pageable);
-    Page<Billing> findByAppointmentId(Integer appointmentId, Pageable pageable);
+	Page<Billing> findByPatientId(Integer patientId, Pageable pageable);
+
+	Page<Billing> findByAppointmentId(Integer appointmentId, Pageable pageable);
 }

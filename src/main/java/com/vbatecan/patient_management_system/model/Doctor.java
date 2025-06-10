@@ -1,10 +1,12 @@
 package com.vbatecan.patient_management_system.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import lombok.*;
-import com.vbatecan.patient_management_system.model.UserAccount;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -13,27 +15,27 @@ import com.vbatecan.patient_management_system.model.UserAccount;
 @Entity
 @Table(name = "doctor")
 public class Doctor {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_account_id")
-    private UserAccount userAccount;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_account_id")
+	private UserAccount userAccount;
 
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
+	@Column(name = "first_name", nullable = false)
+	private String firstName;
 
-    @Column(name = "last_name", nullable = false)
-    private String lastName;
+	@Column(name = "last_name", nullable = false)
+	private String lastName;
 
-    private String specialty;
-    private String contactNumber;
-    private String email;
+	private String specialty;
+	private String contactNumber;
+	private String email;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+	@Column(name = "created_at")
+	private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+	@Column(name = "updated_at")
+	private LocalDateTime updatedAt;
 } 

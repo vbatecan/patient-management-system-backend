@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PrescriptionRepository extends JpaRepository<Prescription, Integer> {
-    Page<Prescription> findByAppointmentId(Integer appointmentId, Pageable pageable);
+	Page<Prescription> findByAppointmentId(Integer appointmentId, Pageable pageable);
 }

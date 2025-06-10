@@ -20,95 +20,95 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MedicalRecordServiceImpl implements MedicalRecordService {
 
-    private final MedicalRecordRepository medicalRecordRepository;
-    private final PatientRepository patientRepository;
+	private final MedicalRecordRepository medicalRecordRepository;
+	private final PatientRepository patientRepository;
 
-    @Override
-    @Transactional
-    public MedicalRecordDTO save(MedicalRecordDTO medicalRecordDTO) {
-        MedicalRecord medicalRecord = convertToEntity(medicalRecordDTO);
-        medicalRecord.setCreatedAt(LocalDateTime.now());
-        medicalRecord.setUpdatedAt(LocalDateTime.now());
-        MedicalRecord savedMedicalRecord = medicalRecordRepository.save(medicalRecord);
-        return convertToDTO(savedMedicalRecord);
-    }
+	@Override
+	@Transactional
+	public MedicalRecordDTO save(MedicalRecordDTO medicalRecordDTO) {
+		MedicalRecord medicalRecord = convertToEntity(medicalRecordDTO);
+		medicalRecord.setCreatedAt(LocalDateTime.now());
+		medicalRecord.setUpdatedAt(LocalDateTime.now());
+		MedicalRecord savedMedicalRecord = medicalRecordRepository.save(medicalRecord);
+		return convertToDTO(savedMedicalRecord);
+	}
 
-    @Override
-    public Optional<MedicalRecordDTO> findById(Integer id) {
-        return medicalRecordRepository.findById(id).map(this::convertToDTO);
-    }
+	@Override
+	public Optional<MedicalRecordDTO> findById(Integer id) {
+		return medicalRecordRepository.findById(id).map(this::convertToDTO);
+	}
 
-    @Override
-    public Page<MedicalRecordDTO> findAll(Pageable pageable) {
-        return medicalRecordRepository.findAll(pageable).map(this::convertToDTO);
-    }
+	@Override
+	public Page<MedicalRecordDTO> findAll(Pageable pageable) {
+		return medicalRecordRepository.findAll(pageable).map(this::convertToDTO);
+	}
 
-    @Override
-    public Page<MedicalRecordDTO> findByPatientId(Integer patientId, Pageable pageable) {
-        if (!patientRepository.existsById(patientId)) {
-            throw new ResourceNotFoundException("Patient not found with id: " + patientId);
-        }
-        return medicalRecordRepository.findByPatientId(patientId, pageable).map(this::convertToDTO);
-    }
+	@Override
+	public Page<MedicalRecordDTO> findByPatientId(Integer patientId, Pageable pageable) {
+		if ( !patientRepository.existsById(patientId) ) {
+			throw new ResourceNotFoundException("Patient not found with id: " + patientId);
+		}
+		return medicalRecordRepository.findByPatientId(patientId, pageable).map(this::convertToDTO);
+	}
 
-    @Override
-    @Transactional
-    public MedicalRecordDTO update(Integer id, MedicalRecordDTO medicalRecordDTO) {
-        MedicalRecord existingMedicalRecord = medicalRecordRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("MedicalRecord not found with id: " + id));
+	@Override
+	@Transactional
+	public MedicalRecordDTO update(Integer id, MedicalRecordDTO medicalRecordDTO) {
+		MedicalRecord existingMedicalRecord = medicalRecordRepository.findById(id)
+			.orElseThrow(() -> new ResourceNotFoundException("MedicalRecord not found with id: " + id));
 
-        existingMedicalRecord.setRecordDate(medicalRecordDTO.getRecordDate());
-        existingMedicalRecord.setDescription(medicalRecordDTO.getDescription());
-        existingMedicalRecord.setFilePath(medicalRecordDTO.getFilePath());
-        existingMedicalRecord.setUpdatedAt(LocalDateTime.now());
+		existingMedicalRecord.setRecordDate(medicalRecordDTO.getRecordDate());
+		existingMedicalRecord.setDescription(medicalRecordDTO.getDescription());
+		existingMedicalRecord.setFilePath(medicalRecordDTO.getFilePath());
+		existingMedicalRecord.setUpdatedAt(LocalDateTime.now());
 
-        if (medicalRecordDTO.getPatientId() != null) {
-            Patient patient = patientRepository.findById(medicalRecordDTO.getPatientId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + medicalRecordDTO.getPatientId()));
-            existingMedicalRecord.setPatient(patient);
-        } else {
-             throw new IllegalArgumentException("Patient ID cannot be null for updating medical record's patient.");
-        }
+		if ( medicalRecordDTO.getPatientId() != null ) {
+			Patient patient = patientRepository.findById(medicalRecordDTO.getPatientId())
+				.orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + medicalRecordDTO.getPatientId()));
+			existingMedicalRecord.setPatient(patient);
+		} else {
+			throw new IllegalArgumentException("Patient ID cannot be null for updating medical record's patient.");
+		}
 
 
-        MedicalRecord updatedMedicalRecord = medicalRecordRepository.save(existingMedicalRecord);
-        return convertToDTO(updatedMedicalRecord);
-    }
+		MedicalRecord updatedMedicalRecord = medicalRecordRepository.save(existingMedicalRecord);
+		return convertToDTO(updatedMedicalRecord);
+	}
 
-    @Override
-    @Transactional
-    public void delete(Integer id) {
-        if (!medicalRecordRepository.existsById(id)) {
-            throw new ResourceNotFoundException("MedicalRecord not found with id: " + id);
-        }
-        medicalRecordRepository.deleteById(id);
-    }
+	@Override
+	@Transactional
+	public void delete(Integer id) {
+		if ( !medicalRecordRepository.existsById(id) ) {
+			throw new ResourceNotFoundException("MedicalRecord not found with id: " + id);
+		}
+		medicalRecordRepository.deleteById(id);
+	}
 
-    private MedicalRecordDTO convertToDTO(MedicalRecord medicalRecord) {
-        MedicalRecordDTO dto = new MedicalRecordDTO();
-        dto.setId(medicalRecord.getId());
-        if (medicalRecord.getPatient() != null) {
-            dto.setPatientId(medicalRecord.getPatient().getId());
-        }
-        dto.setRecordDate(medicalRecord.getRecordDate());
-        dto.setDescription(medicalRecord.getDescription());
-        dto.setFilePath(medicalRecord.getFilePath());
-        dto.setCreatedAt(medicalRecord.getCreatedAt());
-        dto.setUpdatedAt(medicalRecord.getUpdatedAt());
-        return dto;
-    }
+	private MedicalRecordDTO convertToDTO(MedicalRecord medicalRecord) {
+		MedicalRecordDTO dto = new MedicalRecordDTO();
+		dto.setId(medicalRecord.getId());
+		if ( medicalRecord.getPatient() != null ) {
+			dto.setPatientId(medicalRecord.getPatient().getId());
+		}
+		dto.setRecordDate(medicalRecord.getRecordDate());
+		dto.setDescription(medicalRecord.getDescription());
+		dto.setFilePath(medicalRecord.getFilePath());
+		dto.setCreatedAt(medicalRecord.getCreatedAt());
+		dto.setUpdatedAt(medicalRecord.getUpdatedAt());
+		return dto;
+	}
 
-    private MedicalRecord convertToEntity(MedicalRecordDTO medicalRecordDTO) {
-        MedicalRecord medicalRecord = new MedicalRecord();
-        if (medicalRecordDTO.getPatientId() == null) {
-            throw new IllegalArgumentException("Patient ID cannot be null for a new medical record.");
-        }
-        Patient patient = patientRepository.findById(medicalRecordDTO.getPatientId())
-                .orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + medicalRecordDTO.getPatientId()));
-        medicalRecord.setPatient(patient);
-        medicalRecord.setRecordDate(medicalRecordDTO.getRecordDate());
-        medicalRecord.setDescription(medicalRecordDTO.getDescription());
-        medicalRecord.setFilePath(medicalRecordDTO.getFilePath());
-        return medicalRecord;
-    }
+	private MedicalRecord convertToEntity(MedicalRecordDTO medicalRecordDTO) {
+		MedicalRecord medicalRecord = new MedicalRecord();
+		if ( medicalRecordDTO.getPatientId() == null ) {
+			throw new IllegalArgumentException("Patient ID cannot be null for a new medical record.");
+		}
+		Patient patient = patientRepository.findById(medicalRecordDTO.getPatientId())
+			.orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + medicalRecordDTO.getPatientId()));
+		medicalRecord.setPatient(patient);
+		medicalRecord.setRecordDate(medicalRecordDTO.getRecordDate());
+		medicalRecord.setDescription(medicalRecordDTO.getDescription());
+		medicalRecord.setFilePath(medicalRecordDTO.getFilePath());
+		return medicalRecord;
+	}
 }

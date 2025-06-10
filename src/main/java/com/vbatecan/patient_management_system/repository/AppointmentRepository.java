@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Integer> {
-    Page<Appointment> findByPatientId(Integer patientId, Pageable pageable);
-    Page<Appointment> findByDoctorId(Integer doctorId, Pageable pageable);
+	Page<Appointment> findByPatientId(Integer patientId, Pageable pageable);
+
+	Page<Appointment> findByDoctorId(Integer doctorId, Pageable pageable);
 }

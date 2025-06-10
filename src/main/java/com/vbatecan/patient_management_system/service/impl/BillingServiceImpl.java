@@ -22,133 +22,133 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BillingServiceImpl implements BillingService {
 
-    private final BillingRepository billingRepository;
-    private final PatientRepository patientRepository;
-    private final AppointmentRepository appointmentRepository;
+	private final BillingRepository billingRepository;
+	private final PatientRepository patientRepository;
+	private final AppointmentRepository appointmentRepository;
 
-    @Override
-    @Transactional
-    public BillingDTO save(BillingDTO billingDTO) {
-        Billing billing = convertToEntity(billingDTO);
-        billing.setCreatedAt(LocalDateTime.now());
-        billing.setUpdatedAt(LocalDateTime.now());
-        if (billingDTO.getStatus() != null) {
-            billing.setStatus(billingDTO.getStatus());
-        }
-        Billing savedBilling = billingRepository.save(billing);
-        return convertToDTO(savedBilling);
-    }
+	@Override
+	@Transactional
+	public BillingDTO save(BillingDTO billingDTO) {
+		Billing billing = convertToEntity(billingDTO);
+		billing.setCreatedAt(LocalDateTime.now());
+		billing.setUpdatedAt(LocalDateTime.now());
+		if ( billingDTO.getStatus() != null ) {
+			billing.setStatus(billingDTO.getStatus());
+		}
+		Billing savedBilling = billingRepository.save(billing);
+		return convertToDTO(savedBilling);
+	}
 
-    @Override
-    public Optional<BillingDTO> findById(Integer id) {
-        return billingRepository.findById(id).map(this::convertToDTO);
-    }
+	@Override
+	public Optional<BillingDTO> findById(Integer id) {
+		return billingRepository.findById(id).map(this::convertToDTO);
+	}
 
-    @Override
-    public Page<BillingDTO> findAll(Pageable pageable) {
-        return billingRepository.findAll(pageable).map(this::convertToDTO);
-    }
+	@Override
+	public Page<BillingDTO> findAll(Pageable pageable) {
+		return billingRepository.findAll(pageable).map(this::convertToDTO);
+	}
 
-    @Override
-    public Page<BillingDTO> findByPatientId(Integer patientId, Pageable pageable) {
-        if (!patientRepository.existsById(patientId)) {
-            throw new ResourceNotFoundException("Patient not found with id: " + patientId);
-        }
-        return billingRepository.findByPatientId(patientId, pageable).map(this::convertToDTO);
-    }
+	@Override
+	public Page<BillingDTO> findByPatientId(Integer patientId, Pageable pageable) {
+		if ( !patientRepository.existsById(patientId) ) {
+			throw new ResourceNotFoundException("Patient not found with id: " + patientId);
+		}
+		return billingRepository.findByPatientId(patientId, pageable).map(this::convertToDTO);
+	}
 
-    @Override
-    public Page<BillingDTO> findByAppointmentId(Integer appointmentId, Pageable pageable) {
-         if (!appointmentRepository.existsById(appointmentId)) {
-            throw new ResourceNotFoundException("Appointment not found with id: " + appointmentId);
-        }
-        return billingRepository.findByAppointmentId(appointmentId, pageable).map(this::convertToDTO);
-    }
+	@Override
+	public Page<BillingDTO> findByAppointmentId(Integer appointmentId, Pageable pageable) {
+		if ( !appointmentRepository.existsById(appointmentId) ) {
+			throw new ResourceNotFoundException("Appointment not found with id: " + appointmentId);
+		}
+		return billingRepository.findByAppointmentId(appointmentId, pageable).map(this::convertToDTO);
+	}
 
-    @Override
-    @Transactional
-    public BillingDTO update(Integer id, BillingDTO billingDTO) {
-        Billing existingBilling = billingRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Billing not found with id: " + id));
+	@Override
+	@Transactional
+	public BillingDTO update(Integer id, BillingDTO billingDTO) {
+		Billing existingBilling = billingRepository.findById(id)
+			.orElseThrow(() -> new ResourceNotFoundException("Billing not found with id: " + id));
 
-        if (billingDTO.getPatientId() != null) {
-            Patient patient = patientRepository.findById(billingDTO.getPatientId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + billingDTO.getPatientId()));
-            existingBilling.setPatient(patient);
-        }
-         if (billingDTO.getAppointmentId() != null) {
-            Appointment appointment = appointmentRepository.findById(billingDTO.getAppointmentId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id: " + billingDTO.getAppointmentId()));
-            existingBilling.setAppointment(appointment);
-        }
+		if ( billingDTO.getPatientId() != null ) {
+			Patient patient = patientRepository.findById(billingDTO.getPatientId())
+				.orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + billingDTO.getPatientId()));
+			existingBilling.setPatient(patient);
+		}
+		if ( billingDTO.getAppointmentId() != null ) {
+			Appointment appointment = appointmentRepository.findById(billingDTO.getAppointmentId())
+				.orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id: " + billingDTO.getAppointmentId()));
+			existingBilling.setAppointment(appointment);
+		}
 
-        existingBilling.setAmount(billingDTO.getAmount());
-        if (billingDTO.getStatus() != null) {
-            existingBilling.setStatus(billingDTO.getStatus());
-        }
-        existingBilling.setBillingDate(billingDTO.getBillingDate());
-        existingBilling.setUpdatedAt(LocalDateTime.now());
+		existingBilling.setAmount(billingDTO.getAmount());
+		if ( billingDTO.getStatus() != null ) {
+			existingBilling.setStatus(billingDTO.getStatus());
+		}
+		existingBilling.setBillingDate(billingDTO.getBillingDate());
+		existingBilling.setUpdatedAt(LocalDateTime.now());
 
-        Billing updatedBilling = billingRepository.save(existingBilling);
-        return convertToDTO(updatedBilling);
-    }
+		Billing updatedBilling = billingRepository.save(existingBilling);
+		return convertToDTO(updatedBilling);
+	}
 
-    @Override
-    @Transactional
-    public BillingDTO updateBillingStatus(Integer id, String status) {
-        Billing existingBilling = billingRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Billing not found with id: " + id));
-        existingBilling.setStatus(status);
-        existingBilling.setUpdatedAt(LocalDateTime.now());
-        Billing updatedBilling = billingRepository.save(existingBilling);
-        return convertToDTO(updatedBilling);
-    }
+	@Override
+	@Transactional
+	public BillingDTO updateBillingStatus(Integer id, String status) {
+		Billing existingBilling = billingRepository.findById(id)
+			.orElseThrow(() -> new ResourceNotFoundException("Billing not found with id: " + id));
+		existingBilling.setStatus(status);
+		existingBilling.setUpdatedAt(LocalDateTime.now());
+		Billing updatedBilling = billingRepository.save(existingBilling);
+		return convertToDTO(updatedBilling);
+	}
 
-    @Override
-    @Transactional
-    public void delete(Integer id) {
-        if (!billingRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Billing not found with id: " + id);
-        }
-        billingRepository.deleteById(id);
-    }
+	@Override
+	@Transactional
+	public void delete(Integer id) {
+		if ( !billingRepository.existsById(id) ) {
+			throw new ResourceNotFoundException("Billing not found with id: " + id);
+		}
+		billingRepository.deleteById(id);
+	}
 
-    private BillingDTO convertToDTO(Billing billing) {
-        BillingDTO dto = new BillingDTO();
-        dto.setId(billing.getId());
-        if (billing.getPatient() != null) {
-            dto.setPatientId(billing.getPatient().getId());
-        }
-        if (billing.getAppointment() != null) {
-            dto.setAppointmentId(billing.getAppointment().getId());
-        }
-        dto.setAmount(billing.getAmount());
-        dto.setStatus(billing.getStatus());
-        dto.setBillingDate(billing.getBillingDate());
-        dto.setCreatedAt(billing.getCreatedAt());
-        dto.setUpdatedAt(billing.getUpdatedAt());
-        return dto;
-    }
+	private BillingDTO convertToDTO(Billing billing) {
+		BillingDTO dto = new BillingDTO();
+		dto.setId(billing.getId());
+		if ( billing.getPatient() != null ) {
+			dto.setPatientId(billing.getPatient().getId());
+		}
+		if ( billing.getAppointment() != null ) {
+			dto.setAppointmentId(billing.getAppointment().getId());
+		}
+		dto.setAmount(billing.getAmount());
+		dto.setStatus(billing.getStatus());
+		dto.setBillingDate(billing.getBillingDate());
+		dto.setCreatedAt(billing.getCreatedAt());
+		dto.setUpdatedAt(billing.getUpdatedAt());
+		return dto;
+	}
 
-    private Billing convertToEntity(BillingDTO billingDTO) {
-        Billing billing = new Billing();
+	private Billing convertToEntity(BillingDTO billingDTO) {
+		Billing billing = new Billing();
 
-        if (billingDTO.getPatientId() == null) {
-            throw new IllegalArgumentException("Patient ID cannot be null for a new billing record.");
-        }
-        Patient patient = patientRepository.findById(billingDTO.getPatientId())
-                .orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + billingDTO.getPatientId()));
-        billing.setPatient(patient);
+		if ( billingDTO.getPatientId() == null ) {
+			throw new IllegalArgumentException("Patient ID cannot be null for a new billing record.");
+		}
+		Patient patient = patientRepository.findById(billingDTO.getPatientId())
+			.orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + billingDTO.getPatientId()));
+		billing.setPatient(patient);
 
-        if (billingDTO.getAppointmentId() == null) {
-             throw new IllegalArgumentException("Appointment ID cannot be null for a new billing record.");
-        }
-        Appointment appointment = appointmentRepository.findById(billingDTO.getAppointmentId())
-                .orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id: " + billingDTO.getAppointmentId()));
-        billing.setAppointment(appointment);
+		if ( billingDTO.getAppointmentId() == null ) {
+			throw new IllegalArgumentException("Appointment ID cannot be null for a new billing record.");
+		}
+		Appointment appointment = appointmentRepository.findById(billingDTO.getAppointmentId())
+			.orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id: " + billingDTO.getAppointmentId()));
+		billing.setAppointment(appointment);
 
-        billing.setAmount(billingDTO.getAmount());
-        billing.setBillingDate(billingDTO.getBillingDate());
-        return billing;
-    }
+		billing.setAmount(billingDTO.getAmount());
+		billing.setBillingDate(billingDTO.getBillingDate());
+		return billing;
+	}
 }
