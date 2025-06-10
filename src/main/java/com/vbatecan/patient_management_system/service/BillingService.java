@@ -1,25 +1,26 @@
 package com.vbatecan.patient_management_system.service;
 
 import com.vbatecan.patient_management_system.dto.BillingDTO;
+import com.vbatecan.patient_management_system.model.Billing; // Added import
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
 public interface BillingService {
-	BillingDTO save(BillingDTO billingDTO);
+	Billing save(BillingDTO billingDTO); // Changed return type
 
-	Optional<BillingDTO> findById(Integer id);
+	Optional<Billing> findById(Integer id); // Changed return type
 
-	Page<BillingDTO> findAll(Pageable pageable);
+	Page<Billing> findAll(Pageable pageable); // Changed return type
 
-	Page<BillingDTO> findByPatientId(Integer patientId, Pageable pageable);
+	Page<Billing> findByPatientId(Integer patientId, Pageable pageable); // Changed return type
 
-	Page<BillingDTO> findByAppointmentId(Integer appointmentId, Pageable pageable);
+	Page<Billing> findByAppointmentId(Integer appointmentId, Pageable pageable); // Changed return type
 
-	BillingDTO update(Integer id, BillingDTO billingDTO);
+	Billing update(Integer id, BillingDTO billingDTO); // Changed return type
 
-	BillingDTO updateBillingStatus(Integer id, String status);
+	Billing updateBillingStatus(Integer id, String status); // Changed return type
 
 	void delete(Integer id);
 }

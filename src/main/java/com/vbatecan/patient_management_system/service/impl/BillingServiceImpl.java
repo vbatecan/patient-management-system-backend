@@ -28,46 +28,45 @@ public class BillingServiceImpl implements BillingService {
 
 	@Override
 	@Transactional
-	public BillingDTO save(BillingDTO billingDTO) {
+	public Billing save(BillingDTO billingDTO) { // Changed return type
 		Billing billing = convertToEntity(billingDTO);
 		billing.setCreatedAt(LocalDateTime.now());
 		billing.setUpdatedAt(LocalDateTime.now());
 		if ( billingDTO.getStatus() != null ) {
 			billing.setStatus(billingDTO.getStatus());
 		}
-		Billing savedBilling = billingRepository.save(billing);
-		return convertToDTO(savedBilling);
+		return billingRepository.save(billing); // Return entity directly
 	}
 
 	@Override
-	public Optional<BillingDTO> findById(Integer id) {
-		return billingRepository.findById(id).map(this::convertToDTO);
+	public Optional<Billing> findById(Integer id) { // Changed return type
+		return billingRepository.findById(id); // Return Optional<Entity> directly
 	}
 
 	@Override
-	public Page<BillingDTO> findAll(Pageable pageable) {
-		return billingRepository.findAll(pageable).map(this::convertToDTO);
+	public Page<Billing> findAll(Pageable pageable) { // Changed return type
+		return billingRepository.findAll(pageable); // Return Page<Entity> directly
 	}
 
 	@Override
-	public Page<BillingDTO> findByPatientId(Integer patientId, Pageable pageable) {
+	public Page<Billing> findByPatientId(Integer patientId, Pageable pageable) { // Changed return type
 		if ( !patientRepository.existsById(patientId) ) {
 			throw new ResourceNotFoundException("Patient not found with id: " + patientId);
 		}
-		return billingRepository.findByPatientId(patientId, pageable).map(this::convertToDTO);
+		return billingRepository.findByPatientId(patientId, pageable); // Return Page<Entity> directly
 	}
 
 	@Override
-	public Page<BillingDTO> findByAppointmentId(Integer appointmentId, Pageable pageable) {
+	public Page<Billing> findByAppointmentId(Integer appointmentId, Pageable pageable) { // Changed return type
 		if ( !appointmentRepository.existsById(appointmentId) ) {
 			throw new ResourceNotFoundException("Appointment not found with id: " + appointmentId);
 		}
-		return billingRepository.findByAppointmentId(appointmentId, pageable).map(this::convertToDTO);
+		return billingRepository.findByAppointmentId(appointmentId, pageable); // Return Page<Entity> directly
 	}
 
 	@Override
 	@Transactional
-	public BillingDTO update(Integer id, BillingDTO billingDTO) {
+	public Billing update(Integer id, BillingDTO billingDTO) { // Changed return type
 		Billing existingBilling = billingRepository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("Billing not found with id: " + id));
 
@@ -89,19 +88,17 @@ public class BillingServiceImpl implements BillingService {
 		existingBilling.setBillingDate(billingDTO.getBillingDate());
 		existingBilling.setUpdatedAt(LocalDateTime.now());
 
-		Billing updatedBilling = billingRepository.save(existingBilling);
-		return convertToDTO(updatedBilling);
+		return billingRepository.save(existingBilling); // Return entity directly
 	}
 
 	@Override
 	@Transactional
-	public BillingDTO updateBillingStatus(Integer id, String status) {
+	public Billing updateBillingStatus(Integer id, String status) { // Changed return type
 		Billing existingBilling = billingRepository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("Billing not found with id: " + id));
 		existingBilling.setStatus(status);
 		existingBilling.setUpdatedAt(LocalDateTime.now());
-		Billing updatedBilling = billingRepository.save(existingBilling);
-		return convertToDTO(updatedBilling);
+		return billingRepository.save(existingBilling); // Return entity directly
 	}
 
 	@Override
@@ -113,6 +110,8 @@ public class BillingServiceImpl implements BillingService {
 		billingRepository.deleteById(id);
 	}
 
+	// This DTO conversion method is kept for potential internal use or by other layers,
+	// but it's not used by the public methods of this service anymore.
 	private BillingDTO convertToDTO(Billing billing) {
 		BillingDTO dto = new BillingDTO();
 		dto.setId(billing.getId());
@@ -149,6 +148,7 @@ public class BillingServiceImpl implements BillingService {
 
 		billing.setAmount(billingDTO.getAmount());
 		billing.setBillingDate(billingDTO.getBillingDate());
+		// Timestamps (createdAt, updatedAt) are handled in save/update methods.
 		return billing;
 	}
 }

@@ -1,19 +1,20 @@
 package com.vbatecan.patient_management_system.service;
 
 import com.vbatecan.patient_management_system.dto.PatientDTO;
+import com.vbatecan.patient_management_system.model.Patient; // Added import
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
 public interface PatientService {
-	PatientDTO save(PatientDTO patientDTO);
+	Patient save(PatientDTO patientDTO); // Changed return type
 
-	Optional<PatientDTO> findById(Integer id);
+	Optional<Patient> findById(Integer id); // Changed return type
 
-	Page<PatientDTO> findAll(Pageable pageable);
+	Page<Patient> findAll(Pageable pageable); // Changed return type
 
-	PatientDTO update(Integer id, PatientDTO patientDTO);
+	Patient update(Integer id, PatientDTO patientDTO); // Changed return type
 
 	void delete(Integer id);
 }
