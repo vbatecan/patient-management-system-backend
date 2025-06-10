@@ -3,6 +3,7 @@ services:
     build: .
     environment:
       - DB_HOST=postgres
+      - DB_NAME=pms
       - DB_PORT=5432
       - DB_USER=postgres
       - DB_PASSWORD=1234
@@ -19,6 +20,8 @@ services:
       - 'POSTGRES_PASSWORD=1234'
     ports:
       - '5432'
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d
     networks:
       - default
 
