@@ -1,6 +1,7 @@
 package com.vbatecan.patient_management_system.service;
 
 import com.vbatecan.patient_management_system.dto.AppointmentDTO;
+import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -21,5 +22,5 @@ public interface AppointmentService {
 
 	AppointmentDTO updateAppointmentStatus(Integer id, String status);
 
-	void delete(Integer id);
+	void delete(Integer id) throws ResourceNotFoundException;
 }
