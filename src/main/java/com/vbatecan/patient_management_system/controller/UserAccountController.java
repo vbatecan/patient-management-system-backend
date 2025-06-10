@@ -1,6 +1,8 @@
 package com.vbatecan.patient_management_system.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vbatecan.patient_management_system.dto.UserAccountDTO;
+import com.vbatecan.patient_management_system.dto.input.UserAccountInput;
 import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
 import com.vbatecan.patient_management_system.model.UserAccount;
 import com.vbatecan.patient_management_system.service.UserAccountService;
@@ -27,6 +29,7 @@ import java.util.Optional;
 public class UserAccountController {
 
     private final UserAccountService userAccountService;
+    private final ObjectMapper jacksonObjectMapper;
 
     @Operation(summary = "Create a new user account", description = "Creates a new user account in the system. The password will be hashed.")
     @ApiResponses(value = {
@@ -36,8 +39,8 @@ public class UserAccountController {
                     content = @Content(mediaType = "text/plain"))
     })
     @PostMapping
-    public ResponseEntity<UserAccountDTO> createUserAccount(@Valid @RequestBody UserAccountDTO userAccountDTO) {
-        UserAccount savedUserAccount = userAccountService.save(userAccountDTO);
+    public ResponseEntity<UserAccountDTO> createUserAccount(@Valid @RequestBody UserAccountInput input) {
+        UserAccount savedUserAccount = userAccountService.save(input);
         return new ResponseEntity<>(convertToDTO(savedUserAccount), HttpStatus.CREATED);
     }
 
@@ -79,6 +82,7 @@ public class UserAccountController {
     @GetMapping
     public ResponseEntity<Page<UserAccountDTO>> getAllUserAccounts(Pageable pageable) {
         Page<UserAccount> userAccounts = userAccountService.findAll(pageable);
+        // Convert using ObjectMapper, AI!
         Page<UserAccountDTO> userAccountDTOs = userAccounts.map(this::convertToDTOWithoutPassword);
         return ResponseEntity.ok(userAccountDTOs);
     }
@@ -95,11 +99,9 @@ public class UserAccountController {
     @PutMapping("/{id}")
     public ResponseEntity<UserAccountDTO> updateUserAccount(@PathVariable Integer id, @Valid @RequestBody UserAccountDTO userAccountDTO) {
         UserAccount updatedUserAccount = userAccountService.update(id, userAccountDTO);
-        // For update, it's common to return the updated resource without sensitive data like password,
-        // even if the DTO for update might contain it.
-        // If the API contract for update implies returning the password (hashed), then convertToDTO(updatedUserAccount) would be used.
-        // However, typically, GET operations and update responses omit passwords.
-        return ResponseEntity.ok(convertToDTOWithoutPassword(updatedUserAccount));
+        return ResponseEntity.ok(
+          jacksonObjectMapper.convertValue(updatedUserAccount, UserAccountDTO.class)
+        );
     }
 
     @Operation(summary = "Delete a user account", description = "Deletes a user account by its ID.")
@@ -122,27 +124,5 @@ public class UserAccountController {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-    }
-    
-    private UserAccountDTO convertToDTO(UserAccount userAccount) {
-        UserAccountDTO dto = new UserAccountDTO();
-        dto.setId(userAccount.getId());
-        dto.setUsername(userAccount.getUsername());
-        dto.setPassword(userAccount.getPassword()); // Include password (will be hashed from service)
-        dto.setRole(userAccount.getRole());
-        dto.setCreatedAt(userAccount.getCreatedAt());
-        dto.setUpdatedAt(userAccount.getUpdatedAt());
-        return dto;
-    }
-    
-    private UserAccountDTO convertToDTOWithoutPassword(UserAccount userAccount) {
-        UserAccountDTO dto = new UserAccountDTO();
-        dto.setId(userAccount.getId());
-        dto.setUsername(userAccount.getUsername());
-        // Password is deliberately excluded for security
-        dto.setRole(userAccount.getRole());
-        dto.setCreatedAt(userAccount.getCreatedAt());
-        dto.setUpdatedAt(userAccount.getUpdatedAt());
-        return dto;
     }
 }
