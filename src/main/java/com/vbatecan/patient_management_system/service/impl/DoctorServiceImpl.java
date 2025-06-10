@@ -28,18 +28,13 @@ public class DoctorServiceImpl implements DoctorService {
 	@Override
 	@Transactional
 	public Doctor save(DoctorDTO doctorDTO) {
-		// Simplify this function. AI!
-		if ( doctorDTO.getUserAccountId() != null ) {
-			UserAccount ua = userAccountRepository.findById(doctorDTO.getUserAccountId())
-				.orElseThrow(() -> new ResourceNotFoundException("UserAccount not found with id: " + doctorDTO.getUserAccountId()));
-			if ( ua.getRole() != Role.DOCTOR ) {
-				throw new IllegalArgumentException("UserAccount provided for Doctor must have DOCTOR role.");
-			}
-		} else {
-			throw new IllegalArgumentException("UserAccountId is required to create a Doctor.");
+		Doctor doctor = convertToEntity(doctorDTO);
+
+		// Ensure the associated UserAccount has the DOCTOR role
+		if (doctor.getUserAccount().getRole() != Role.DOCTOR) {
+			throw new IllegalArgumentException("UserAccount provided for Doctor must have DOCTOR role.");
 		}
 
-		Doctor doctor = convertToEntity(doctorDTO);
 		doctor.setCreatedAt(LocalDateTime.now());
 		doctor.setUpdatedAt(LocalDateTime.now());
 		return doctorRepository.save(doctor);
