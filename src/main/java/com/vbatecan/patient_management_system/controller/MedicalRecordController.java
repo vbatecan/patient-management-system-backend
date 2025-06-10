@@ -25,96 +25,96 @@ import java.util.Optional;
 @Tag(name = "Medical Record Management", description = "APIs for managing medical records")
 public class MedicalRecordController {
 
-    private final MedicalRecordService medicalRecordService;
+	private final MedicalRecordService medicalRecordService;
 
-    @Operation(summary = "Create a new medical record", description = "Creates a new medical record in the system.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Medical record created successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = MedicalRecordDTO.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid input data",
-                    content = @Content(mediaType = "text/plain")),
-            @ApiResponse(responseCode = "404", description = "Associated Patient not found",
-                    content = @Content(mediaType = "text/plain"))
-    })
-    @PostMapping
-    public ResponseEntity<MedicalRecordDTO> createMedicalRecord(@Valid @RequestBody MedicalRecordDTO medicalRecordDTO) {
-        MedicalRecordDTO savedMedicalRecord = medicalRecordService.save(medicalRecordDTO);
-        return new ResponseEntity<>(savedMedicalRecord, HttpStatus.CREATED);
-    }
+	@Operation(summary = "Create a new medical record", description = "Creates a new medical record in the system.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "201", description = "Medical record created successfully",
+			content = @Content(mediaType = "application/json", schema = @Schema(implementation = MedicalRecordDTO.class))),
+		@ApiResponse(responseCode = "400", description = "Invalid input data",
+			content = @Content(mediaType = "text/plain")),
+		@ApiResponse(responseCode = "404", description = "Associated Patient not found",
+			content = @Content(mediaType = "text/plain"))
+	})
+	@PostMapping
+	public ResponseEntity<MedicalRecordDTO> createMedicalRecord(@Valid @RequestBody MedicalRecordDTO medicalRecordDTO) {
+		MedicalRecordDTO savedMedicalRecord = medicalRecordService.save(medicalRecordDTO);
+		return new ResponseEntity<>(savedMedicalRecord, HttpStatus.CREATED);
+	}
 
-    @Operation(summary = "Get a medical record by ID", description = "Retrieves a specific medical record by its unique ID.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Medical record found",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = MedicalRecordDTO.class))),
-            @ApiResponse(responseCode = "404", description = "Medical record not found",
-                    content = @Content(mediaType = "text/plain"))
-    })
-    @GetMapping("/{id}")
-    public ResponseEntity<MedicalRecordDTO> getMedicalRecordById(@PathVariable Integer id) {
-        Optional<MedicalRecordDTO> medicalRecordDTOOptional = medicalRecordService.findById(id);
-        return medicalRecordDTOOptional
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
+	@Operation(summary = "Get a medical record by ID", description = "Retrieves a specific medical record by its unique ID.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "Medical record found",
+			content = @Content(mediaType = "application/json", schema = @Schema(implementation = MedicalRecordDTO.class))),
+		@ApiResponse(responseCode = "404", description = "Medical record not found",
+			content = @Content(mediaType = "text/plain"))
+	})
+	@GetMapping("/{id}")
+	public ResponseEntity<MedicalRecordDTO> getMedicalRecordById(@PathVariable Integer id) {
+		Optional<MedicalRecordDTO> medicalRecordDTOOptional = medicalRecordService.findById(id);
+		return medicalRecordDTOOptional
+			.map(ResponseEntity::ok)
+			.orElseGet(() -> ResponseEntity.notFound().build());
+	}
 
-    @Operation(summary = "Get all medical records", description = "Retrieves a paginated list of all medical records.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of medical records",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Page.class)))
-    })
-    @GetMapping
-    public ResponseEntity<Page<MedicalRecordDTO>> getAllMedicalRecords(Pageable pageable) {
-        Page<MedicalRecordDTO> medicalRecords = medicalRecordService.findAll(pageable);
-        return ResponseEntity.ok(medicalRecords);
-    }
+	@Operation(summary = "Get all medical records", description = "Retrieves a paginated list of all medical records.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "Successfully retrieved list of medical records",
+			content = @Content(mediaType = "application/json", schema = @Schema(implementation = Page.class)))
+	})
+	@GetMapping
+	public ResponseEntity<Page<MedicalRecordDTO>> getAllMedicalRecords(Pageable pageable) {
+		Page<MedicalRecordDTO> medicalRecords = medicalRecordService.findAll(pageable);
+		return ResponseEntity.ok(medicalRecords);
+	}
 
-    @Operation(summary = "Get medical records by Patient ID", description = "Retrieves a paginated list of medical records for a specific patient.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of medical records for the patient",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Page.class))),
-            @ApiResponse(responseCode = "404", description = "Patient not found",
-                    content = @Content(mediaType = "text/plain"))
-    })
-    @GetMapping("/patient/{patientId}")
-    public ResponseEntity<Page<MedicalRecordDTO>> getMedicalRecordsByPatientId(@PathVariable Integer patientId, Pageable pageable) {
-        Page<MedicalRecordDTO> medicalRecords = medicalRecordService.findByPatientId(patientId, pageable);
-        return ResponseEntity.ok(medicalRecords);
-    }
+	@Operation(summary = "Get medical records by Patient ID", description = "Retrieves a paginated list of medical records for a specific patient.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "Successfully retrieved list of medical records for the patient",
+			content = @Content(mediaType = "application/json", schema = @Schema(implementation = Page.class))),
+		@ApiResponse(responseCode = "404", description = "Patient not found",
+			content = @Content(mediaType = "text/plain"))
+	})
+	@GetMapping("/patient/{patientId}")
+	public ResponseEntity<Page<MedicalRecordDTO>> getMedicalRecordsByPatientId(@PathVariable Integer patientId, Pageable pageable) {
+		Page<MedicalRecordDTO> medicalRecords = medicalRecordService.findByPatientId(patientId, pageable);
+		return ResponseEntity.ok(medicalRecords);
+	}
 
-    @Operation(summary = "Update an existing medical record", description = "Updates the details of an existing medical record by its ID.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Medical record updated successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = MedicalRecordDTO.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid input data",
-                    content = @Content(mediaType = "text/plain")),
-            @ApiResponse(responseCode = "404", description = "Medical record or associated Patient not found",
-                    content = @Content(mediaType = "text/plain"))
-    })
-    @PutMapping("/{id}")
-    public ResponseEntity<MedicalRecordDTO> updateMedicalRecord(@PathVariable Integer id, @Valid @RequestBody MedicalRecordDTO medicalRecordDTO) {
-        MedicalRecordDTO updatedMedicalRecord = medicalRecordService.update(id, medicalRecordDTO);
-        return ResponseEntity.ok(updatedMedicalRecord);
-    }
+	@Operation(summary = "Update an existing medical record", description = "Updates the details of an existing medical record by its ID.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "Medical record updated successfully",
+			content = @Content(mediaType = "application/json", schema = @Schema(implementation = MedicalRecordDTO.class))),
+		@ApiResponse(responseCode = "400", description = "Invalid input data",
+			content = @Content(mediaType = "text/plain")),
+		@ApiResponse(responseCode = "404", description = "Medical record or associated Patient not found",
+			content = @Content(mediaType = "text/plain"))
+	})
+	@PutMapping("/{id}")
+	public ResponseEntity<MedicalRecordDTO> updateMedicalRecord(@PathVariable Integer id, @Valid @RequestBody MedicalRecordDTO medicalRecordDTO) {
+		MedicalRecordDTO updatedMedicalRecord = medicalRecordService.update(id, medicalRecordDTO);
+		return ResponseEntity.ok(updatedMedicalRecord);
+	}
 
-    @Operation(summary = "Delete a medical record", description = "Deletes a medical record by its ID.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Medical record deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "Medical record not found",
-                    content = @Content(mediaType = "text/plain"))
-    })
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMedicalRecord(@PathVariable Integer id) {
-        medicalRecordService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
+	@Operation(summary = "Delete a medical record", description = "Deletes a medical record by its ID.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "204", description = "Medical record deleted successfully"),
+		@ApiResponse(responseCode = "404", description = "Medical record not found",
+			content = @Content(mediaType = "text/plain"))
+	})
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> deleteMedicalRecord(@PathVariable Integer id) {
+		medicalRecordService.delete(id);
+		return ResponseEntity.noContent().build();
+	}
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-    }
+	@ExceptionHandler(ResourceNotFoundException.class)
+	public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException ex) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+	}
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-    }
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+	}
 }
