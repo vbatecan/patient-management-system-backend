@@ -1,6 +1,7 @@
 package com.vbatecan.patient_management_system.service.impl;
 
 import com.vbatecan.patient_management_system.dto.DoctorDTO;
+import com.vbatecan.patient_management_system.enums.Role;
 import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
 import com.vbatecan.patient_management_system.model.Doctor;
 import com.vbatecan.patient_management_system.model.UserAccount;
@@ -10,6 +11,7 @@ import com.vbatecan.patient_management_system.service.DoctorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,10 +28,11 @@ public class DoctorServiceImpl implements DoctorService {
 	@Override
 	@Transactional
 	public Doctor save(DoctorDTO doctorDTO) {
+		// Simplify this function.
 		if ( doctorDTO.getUserAccountId() != null ) {
 			UserAccount ua = userAccountRepository.findById(doctorDTO.getUserAccountId())
 				.orElseThrow(() -> new ResourceNotFoundException("UserAccount not found with id: " + doctorDTO.getUserAccountId()));
-			if ( ua.getRole() != UserAccount.Role.DOCTOR ) {
+			if ( ua.getRole() != Role.DOCTOR ) {
 				throw new IllegalArgumentException("UserAccount provided for Doctor must have DOCTOR role.");
 			}
 		} else {
@@ -79,14 +82,11 @@ public class DoctorServiceImpl implements DoctorService {
 		if ( doctorDTO.getUserAccountId() != null ) {
 			UserAccount userAccount = userAccountRepository.findById(doctorDTO.getUserAccountId())
 				.orElseThrow(() -> new ResourceNotFoundException("UserAccount not found with id: " + doctorDTO.getUserAccountId()));
-			if ( userAccount.getRole() != UserAccount.Role.DOCTOR ) {
+			if ( userAccount.getRole() != Role.DOCTOR ) {
 				throw new IllegalArgumentException("UserAccount provided for Doctor must have DOCTOR role.");
 			}
 			existingDoctor.setUserAccount(userAccount);
 		} else {
-			// Retain existing UserAccount if not provided in DTO, or handle as per business logic.
-			// For this example, we'll throw an error if it's null, assuming UserAccountId is mandatory for updates too.
-			// If UserAccount can be disassociated, this logic would change.
 			throw new IllegalArgumentException("UserAccountId cannot be null when updating a Doctor.");
 		}
 
@@ -95,6 +95,7 @@ public class DoctorServiceImpl implements DoctorService {
 
 	@Override
 	@Transactional
+	@Async
 	public void delete(Integer id) {
 		if ( !doctorRepository.existsById(id) ) {
 			throw new ResourceNotFoundException("Doctor not found with id: " + id);
@@ -102,33 +103,12 @@ public class DoctorServiceImpl implements DoctorService {
 		doctorRepository.deleteById(id);
 	}
 
-	// This DTO conversion method is kept for potential internal use or by other layers,
-	// but it's not used by the public methods of this service anymore.
-	private DoctorDTO convertToDTO(Doctor doctor) {
-		DoctorDTO dto = new DoctorDTO();
-		dto.setId(doctor.getId());
-		if ( doctor.getUserAccount() != null ) {
-			dto.setUserAccountId(doctor.getUserAccount().getId());
-		}
-		dto.setFirstName(doctor.getFirstName());
-		dto.setLastName(doctor.getLastName());
-		dto.setSpecialty(doctor.getSpecialty());
-		dto.setContactNumber(doctor.getContactNumber());
-		dto.setEmail(doctor.getEmail());
-		dto.setCreatedAt(doctor.getCreatedAt());
-		dto.setUpdatedAt(doctor.getUpdatedAt());
-		return dto;
-	}
-
 	private Doctor convertToEntity(DoctorDTO doctorDTO) {
 		Doctor doctor = new Doctor();
-		// UserAccount is validated and set in the save/update methods before calling this.
-		// However, ensuring it's set here from DTO is still good practice.
 		if ( doctorDTO.getUserAccountId() == null ) {
-			// This check might be redundant if save/update methods already validate,
-			// but included for robustness of this private method.
 			throw new IllegalArgumentException("UserAccountId is required for a Doctor entity.");
 		}
+
 		UserAccount userAccount = userAccountRepository.findById(doctorDTO.getUserAccountId())
 			.orElseThrow(() -> new ResourceNotFoundException("UserAccount not found with id: " + doctorDTO.getUserAccountId()));
 		doctor.setUserAccount(userAccount);
@@ -138,7 +118,6 @@ public class DoctorServiceImpl implements DoctorService {
 		doctor.setSpecialty(doctorDTO.getSpecialty());
 		doctor.setContactNumber(doctorDTO.getContactNumber());
 		doctor.setEmail(doctorDTO.getEmail());
-		// Timestamps (createdAt, updatedAt) are handled in save/update methods.
 		return doctor;
 	}
 }
