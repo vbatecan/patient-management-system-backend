@@ -28,7 +28,7 @@ public class DoctorServiceImpl implements DoctorService {
 	@Override
 	@Transactional
 	public Doctor save(DoctorDTO doctorDTO) {
-		// Simplify this function.
+		// Simplify this function. AI!
 		if ( doctorDTO.getUserAccountId() != null ) {
 			UserAccount ua = userAccountRepository.findById(doctorDTO.getUserAccountId())
 				.orElseThrow(() -> new ResourceNotFoundException("UserAccount not found with id: " + doctorDTO.getUserAccountId()));
