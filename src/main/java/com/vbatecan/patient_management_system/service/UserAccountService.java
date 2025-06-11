@@ -1,6 +1,7 @@
 package com.vbatecan.patient_management_system.service;
 
-import com.vbatecan.patient_management_system.dto.UserAccountDTO;
+import com.vbatecan.patient_management_system.dto.input.UserAccountInput;
+import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
 import com.vbatecan.patient_management_system.model.UserAccount;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,15 +9,15 @@ import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 public interface UserAccountService {
-    UserAccount save(UserAccountDTO userAccountDTO);
+	Optional<UserAccount> save(UserAccountInput input) throws IllegalArgumentException;
 
-    Optional<UserAccount> findById(Integer id);
+	Optional<UserAccount> findById(Integer id);
 
-    Optional<UserAccount> findByUsername(String username);
+	Optional<UserAccount> findByUsername(String username);
 
-    Page<UserAccount> findAll(Pageable pageable);
+	Page<UserAccount> findAll(Pageable pageable);
 
-    UserAccount update(Integer id, UserAccountDTO userAccountDTO);
+	Optional<UserAccount> update(Integer id, UserAccountInput userAccountDTO) throws ResourceNotFoundException, IllegalArgumentException;
 
-    void delete(Integer id);
+	void delete(Integer id);
 }
