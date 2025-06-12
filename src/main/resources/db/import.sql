@@ -18,11 +18,11 @@ CREATE TABLE patient
     user_account_id   INT,
     first_name        VARCHAR NOT NULL,
     last_name         VARCHAR NOT NULL,
-    date_of_birth     date    NOT NULL,
+    date_of_birth     DATE    NOT NULL,
     gender            VARCHAR,
     contact_number    VARCHAR,
     email             VARCHAR,
-    address           text,
+    address           TEXT,
     emergency_contact VARCHAR,
     created_at        TIMESTAMP DEFAULT (now()),
     updated_at        TIMESTAMP DEFAULT (now())
@@ -58,8 +58,8 @@ CREATE TABLE medical_record
     id          SERIAL,
     patient_id  INT,
     record_date TIMESTAMP NOT NULL,
-    description text,
-    file_path   VARCHAR,
+    description TEXT,
+    file_path   VARCHAR NULL,
     created_at  TIMESTAMP DEFAULT (now()),
     updated_at  TIMESTAMP DEFAULT (now())
 );
@@ -78,11 +78,12 @@ CREATE TABLE prescription
 CREATE TABLE billing
 (
     id             SERIAL,
-    patient_id     INT,
+    patient_id     INT     NOT NULL,
     appointment_id INT,
-    amount         decimal NOT NULL,
+    amount         DECIMAL NOT NULL,
     status         VARCHAR   DEFAULT ('PENDING'),
     billing_date   TIMESTAMP DEFAULT (now()),
+    details        TEXT    NULL,
     created_at     TIMESTAMP DEFAULT (now()),
     updated_at     TIMESTAMP DEFAULT (now())
 );

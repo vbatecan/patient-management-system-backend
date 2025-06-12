@@ -1,5 +1,6 @@
 package com.vbatecan.patient_management_system.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vbatecan.patient_management_system.dto.AppointmentDTO;
 import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
 import com.vbatecan.patient_management_system.model.Appointment;
@@ -13,7 +14,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/appointments")
@@ -30,31 +29,32 @@ import java.util.stream.Collectors;
 public class AppointmentController {
 
 	private final AppointmentService appointmentService;
+	private final ObjectMapper mapper = new ObjectMapper();
 
 	@Operation(summary = "Create a new appointment", description = "Creates a new appointment with the provided details")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "201", description = "Appointment created successfully", 
-				content = @Content(schema = @Schema(implementation = AppointmentDTO.class))),
+		@ApiResponse(responseCode = "201", description = "Appointment created successfully",
+			content = @Content(schema = @Schema(implementation = AppointmentDTO.class))),
 		@ApiResponse(responseCode = "400", description = "Invalid input data"),
 		@ApiResponse(responseCode = "404", description = "Patient or doctor not found")
 	})
 	@PostMapping
 	public ResponseEntity<AppointmentDTO> createAppointment(@RequestBody AppointmentDTO appointmentDTO) {
 		Appointment savedAppointment = appointmentService.save(appointmentDTO);
-		return new ResponseEntity<>(convertToDTO(savedAppointment), HttpStatus.CREATED);
+		return new ResponseEntity<>(mapper.convertValue(savedAppointment, AppointmentDTO.class), HttpStatus.CREATED);
 	}
 
 	@Operation(summary = "Get appointment by ID", description = "Returns an appointment based on its ID")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "Appointment found", 
-				content = @Content(schema = @Schema(implementation = AppointmentDTO.class))),
+		@ApiResponse(responseCode = "200", description = "Appointment found",
+			content = @Content(schema = @Schema(implementation = AppointmentDTO.class))),
 		@ApiResponse(responseCode = "404", description = "Appointment not found")
 	})
 	@GetMapping("/{id}")
 	public ResponseEntity<AppointmentDTO> getAppointmentById(
-			@Parameter(description = "ID of the appointment", required = true) @PathVariable Integer id) {
+		@Parameter(description = "ID of the appointment", required = true) @PathVariable Integer id) {
 		Optional<Appointment> appointmentOptional = appointmentService.findById(id);
-		return appointmentOptional.map(appointment -> ResponseEntity.ok(convertToDTO(appointment)))
+		return appointmentOptional.map(appointment -> ResponseEntity.ok(mapper.convertValue(appointmentOptional.get(), AppointmentDTO.class)))
 			.orElseGet(() -> ResponseEntity.notFound().build());
 	}
 
@@ -62,9 +62,9 @@ public class AppointmentController {
 	@ApiResponse(responseCode = "200", description = "List of appointments retrieved successfully")
 	@GetMapping
 	public ResponseEntity<Page<AppointmentDTO>> getAllAppointments(
-			@Parameter(description = "Pagination parameters") Pageable pageable) {
+		@Parameter(description = "Pagination parameters") Pageable pageable) {
 		Page<Appointment> appointments = appointmentService.findAll(pageable);
-		Page<AppointmentDTO> appointmentDTOs = appointments.map(this::convertToDTO);
+		Page<AppointmentDTO> appointmentDTOs = appointments.map(appointment -> mapper.convertValue(appointment, AppointmentDTO.class));
 		return ResponseEntity.ok(appointmentDTOs);
 	}
 
@@ -75,10 +75,10 @@ public class AppointmentController {
 	})
 	@GetMapping("/patient/{patientId}")
 	public ResponseEntity<Page<AppointmentDTO>> getAppointmentsByPatientId(
-			@Parameter(description = "ID of the patient", required = true) @PathVariable Integer patientId,
-			@Parameter(description = "Pagination parameters") Pageable pageable) {
+		@Parameter(description = "ID of the patient", required = true) @PathVariable Integer patientId,
+		@Parameter(description = "Pagination parameters") Pageable pageable) {
 		Page<Appointment> appointments = appointmentService.findByPatientId(patientId, pageable);
-		Page<AppointmentDTO> appointmentDTOs = appointments.map(this::convertToDTO);
+		Page<AppointmentDTO> appointmentDTOs = appointments.map(appointment -> mapper.convertValue(appointment, AppointmentDTO.class));
 		return ResponseEntity.ok(appointmentDTOs);
 	}
 
@@ -89,27 +89,27 @@ public class AppointmentController {
 	})
 	@GetMapping("/doctor/{doctorId}")
 	public ResponseEntity<Page<AppointmentDTO>> getAppointmentsByDoctorId(
-			@Parameter(description = "ID of the doctor", required = true) @PathVariable Integer doctorId,
-			@Parameter(description = "Pagination parameters") Pageable pageable) {
+		@Parameter(description = "ID of the doctor", required = true) @PathVariable Integer doctorId,
+		@Parameter(description = "Pagination parameters") Pageable pageable) {
 		Page<Appointment> appointments = appointmentService.findByDoctorId(doctorId, pageable);
-		Page<AppointmentDTO> appointmentDTOs = appointments.map(this::convertToDTO);
+		Page<AppointmentDTO> appointmentDTOs = appointments.map(appointment -> mapper.convertValue(appointment, AppointmentDTO.class));
 		return ResponseEntity.ok(appointmentDTOs);
 	}
 
 	@Operation(summary = "Update an appointment", description = "Updates an existing appointment with the provided details")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "Appointment updated successfully", 
-				content = @Content(schema = @Schema(implementation = AppointmentDTO.class))),
+		@ApiResponse(responseCode = "200", description = "Appointment updated successfully",
+			content = @Content(schema = @Schema(implementation = AppointmentDTO.class))),
 		@ApiResponse(responseCode = "400", description = "Invalid input data"),
 		@ApiResponse(responseCode = "404", description = "Appointment not found")
 	})
 	@PutMapping("/{id}")
 	public ResponseEntity<AppointmentDTO> updateAppointment(
-			@Parameter(description = "ID of the appointment to update", required = true) @PathVariable Integer id, 
-			@RequestBody AppointmentDTO appointmentDTO) {
+		@Parameter(description = "ID of the appointment to update", required = true) @PathVariable Integer id,
+		@RequestBody AppointmentDTO appointmentDTO) {
 		try {
 			Appointment updatedAppointment = appointmentService.update(id, appointmentDTO);
-			return ResponseEntity.ok(convertToDTO(updatedAppointment));
+			return ResponseEntity.ok(mapper.convertValue(updatedAppointment, AppointmentDTO.class));
 		} catch ( ResourceNotFoundException e ) {
 			return ResponseEntity.notFound().build();
 		}
@@ -123,15 +123,15 @@ public class AppointmentController {
 	})
 	@PatchMapping("/{id}/status")
 	public ResponseEntity<AppointmentDTO> updateAppointmentStatus(
-			@Parameter(description = "ID of the appointment", required = true) @PathVariable Integer id, 
-			@RequestBody Map<String, String> statusUpdate) {
+		@Parameter(description = "ID of the appointment", required = true) @PathVariable Integer id,
+		@RequestBody Map<String, String> statusUpdate) {
 		String status = statusUpdate.get("status");
 		if ( status == null || status.trim().isEmpty() ) {
 			return ResponseEntity.badRequest().build();
 		}
 		try {
 			Appointment updatedAppointment = appointmentService.updateAppointmentStatus(id, status);
-			return ResponseEntity.ok(convertToDTO(updatedAppointment));
+			return ResponseEntity.ok(mapper.convertValue(updatedAppointment, AppointmentDTO.class));
 		} catch ( ResourceNotFoundException e ) {
 			return ResponseEntity.notFound().build();
 		}
@@ -144,33 +144,12 @@ public class AppointmentController {
 	})
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteAppointment(
-			@Parameter(description = "ID of the appointment to delete", required = true) @PathVariable Integer id) {
+		@Parameter(description = "ID of the appointment to delete", required = true) @PathVariable Integer id) {
 		try {
 			appointmentService.delete(id);
 			return ResponseEntity.noContent().build();
 		} catch ( ResourceNotFoundException e ) {
 			return ResponseEntity.notFound().build();
 		}
-	}
-	
-	private AppointmentDTO convertToDTO(Appointment appointment) {
-		AppointmentDTO dto = new AppointmentDTO();
-		
-		dto.setId(appointment.getId());
-		
-		if (appointment.getPatient() != null) {
-			dto.setPatientId(appointment.getPatient().getId());
-		}
-		
-		if (appointment.getDoctor() != null) {
-			dto.setDoctorId(appointment.getDoctor().getId());
-		}
-		
-		dto.setAppointmentDate(appointment.getAppointmentDate());
-		dto.setReason(appointment.getReason());
-		dto.setStatus(appointment.getStatus());
-		dto.setCreatedAt(appointment.getCreatedAt());
-		dto.setUpdatedAt(appointment.getUpdatedAt());
-		return dto;
 	}
 }

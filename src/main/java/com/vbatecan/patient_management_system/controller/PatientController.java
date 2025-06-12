@@ -1,5 +1,6 @@
 package com.vbatecan.patient_management_system.controller;
 
+import com.vbatecan.patient_management_system.dto.MessageResponse;
 import com.vbatecan.patient_management_system.dto.PatientDTO;
 import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
 import com.vbatecan.patient_management_system.model.Patient;
@@ -97,32 +98,15 @@ public class PatientController {
 		return ResponseEntity.noContent().build();
 	}
 
+	// Region: Exception handling
+
 	@ExceptionHandler(ResourceNotFoundException.class)
-	public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException ex) {
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+	public ResponseEntity<MessageResponse> handleResourceNotFoundException(ResourceNotFoundException ex) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse(ex.getMessage(), false));
 	}
 
 	@ExceptionHandler(IllegalArgumentException.class)
-	public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-	}
-	
-	private PatientDTO convertToDTO(Patient patient) {
-		PatientDTO dto = new PatientDTO();
-		dto.setId(patient.getId());
-		if (patient.getUserAccount() != null) {
-			dto.setUserAccountId(patient.getUserAccount().getId());
-		}
-		dto.setFirstName(patient.getFirstName());
-		dto.setLastName(patient.getLastName());
-		dto.setDateOfBirth(patient.getDateOfBirth());
-		dto.setGender(patient.getGender());
-		dto.setContactNumber(patient.getContactNumber());
-		dto.setEmail(patient.getEmail());
-		dto.setAddress(patient.getAddress());
-		dto.setEmergencyContact(patient.getEmergencyContact());
-		dto.setCreatedAt(patient.getCreatedAt());
-		dto.setUpdatedAt(patient.getUpdatedAt());
-		return dto;
+	public ResponseEntity<MessageResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageResponse(ex.getMessage(), false));
 	}
 }
