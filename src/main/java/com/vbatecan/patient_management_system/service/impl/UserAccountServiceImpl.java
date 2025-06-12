@@ -68,7 +68,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 		}
 
 		// TODO: We need to make sure that username we are updating is the user who is currently logged in.
-		// Complete the API Endpoint security first.
+		// TODO: Complete the API Endpoint security first.
 		Optional<UserAccount> existingUserAccount = userAccountRepository.findById(id);
 
 		if ( existingUserAccount.isEmpty() ) {
@@ -77,12 +77,12 @@ public class UserAccountServiceImpl implements UserAccountService {
 
 		UserAccount userAccount = existingUserAccount.get();
 		userAccount.setUsername(input.getUsername()); // Updating the username is safe as it was already validated to be non existent.
-		userAccount.setPassword(
-			passwordEncoder.encode(input.getPassword())
-		);
+		if ( !input.getPassword().isEmpty() ) { // If the password is empty or null, we do not update it
+			userAccount.setPassword(passwordEncoder.encode(input.getPassword())); // Only update password if provided
+		}
+
 		userAccount.setRole(input.getRole());
 		userAccount.setUpdatedAt(LocalDateTime.now());
-
 		return Optional.of(userAccountRepository.save(userAccount));
 	}
 

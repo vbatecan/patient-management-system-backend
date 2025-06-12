@@ -1,5 +1,6 @@
 package com.vbatecan.patient_management_system.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vbatecan.patient_management_system.dto.AppointmentDTO;
 import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
 import com.vbatecan.patient_management_system.model.Appointment;
@@ -9,6 +10,7 @@ import com.vbatecan.patient_management_system.repository.AppointmentRepository;
 import com.vbatecan.patient_management_system.repository.DoctorRepository;
 import com.vbatecan.patient_management_system.repository.PatientRepository;
 import com.vbatecan.patient_management_system.service.AppointmentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,27 +27,19 @@ public class AppointmentServiceImpl implements AppointmentService {
 	private final AppointmentRepository appointmentRepository;
 	private final PatientRepository patientRepository;
 	private final DoctorRepository doctorRepository;
+	private final ObjectMapper mapper = new ObjectMapper();
 
 	@Override
 	@Transactional
-	public Appointment save(AppointmentDTO appointmentDTO) {
-		try {
-			Appointment appointment = convertToEntity(appointmentDTO);
-
-			appointment.setCreatedAt(LocalDateTime.now());
-			appointment.setUpdatedAt(LocalDateTime.now());
-
-			if ( appointmentDTO.getStatus() != null ) {
-				appointment.setStatus(appointmentDTO.getStatus());
-			}
-
-			Appointment savedAppointment = appointmentRepository.save(appointment);
-			return savedAppointment;
-		} catch ( ResourceNotFoundException e ) {
-			throw new ResourceNotFoundException("Error saving appointment: " + e.getMessage());
-		} catch ( IllegalArgumentException e ) {
-			throw new IllegalArgumentException("Invalid data provided for appointment: " + e.getMessage());
+	public Appointment save(@Valid AppointmentDTO appointmentDTO) {
+		Appointment appointment = mapper.convertValue(appointmentDTO, Appointment.class);
+		appointment.setCreatedAt(LocalDateTime.now());
+		appointment.setUpdatedAt(LocalDateTime.now());
+		if ( appointmentDTO.getStatus() != null ) {
+			appointment.setStatus(appointmentDTO.getStatus());
 		}
+
+		return appointmentRepository.save(appointment);
 	}
 
 	@Override
@@ -59,7 +53,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 	}
 
 	@Override
-	public Page<Appointment> findByPatientId(Integer patientId, Pageable pageable) {
+	public Page<Appointment> findByPatientId(Integer patientId, Pageable pageable) throws ResourceNotFoundException {
 		if ( !patientRepository.existsById(patientId) ) {
 			throw new ResourceNotFoundException("Patient not found with id: " + patientId);
 		}
@@ -67,7 +61,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 	}
 
 	@Override
-	public Page<Appointment> findByDoctorId(Integer doctorId, Pageable pageable) {
+	public Page<Appointment> findByDoctorId(Integer doctorId, Pageable pageable) throws ResourceNotFoundException {
 		if ( !doctorRepository.existsById(doctorId) ) {
 			throw new ResourceNotFoundException("Doctor not found with id: " + doctorId);
 		}
@@ -76,18 +70,18 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 	@Override
 	@Transactional
-	public Appointment update(Integer id, AppointmentDTO appointmentDTO) {
+	public Appointment update(Integer id, AppointmentDTO appointmentDTO) throws ResourceNotFoundException {
 		Appointment existingAppointment = appointmentRepository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id: " + id));
 
-		if ( appointmentDTO.getPatientId() != null ) {
-			Patient patient = patientRepository.findById(appointmentDTO.getPatientId())
-				.orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + appointmentDTO.getPatientId()));
+		if ( appointmentDTO.getPatient().getId() != null ) {
+			Patient patient = patientRepository.findById(appointmentDTO.getPatient().getId())
+				.orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + appointmentDTO.getPatient().getId()));
 			existingAppointment.setPatient(patient);
 		}
-		if ( appointmentDTO.getDoctorId() != null ) {
-			Doctor doctor = doctorRepository.findById(appointmentDTO.getDoctorId())
-				.orElseThrow(() -> new ResourceNotFoundException("Doctor not found with id: " + appointmentDTO.getDoctorId()));
+		if ( appointmentDTO.getDoctor().getId() != null ) {
+			Doctor doctor = doctorRepository.findById(appointmentDTO.getDoctor().getId())
+				.orElseThrow(() -> new ResourceNotFoundException("Doctor not found with id: " + appointmentDTO.getDoctor().getId()));
 			existingAppointment.setDoctor(doctor);
 		}
 		existingAppointment.setAppointmentDate(appointmentDTO.getAppointmentDate());
@@ -97,13 +91,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 		}
 		existingAppointment.setUpdatedAt(LocalDateTime.now());
 
-		Appointment updatedAppointment = appointmentRepository.save(existingAppointment);
-		return updatedAppointment;
+		return appointmentRepository.save(existingAppointment);
 	}
 
 	@Override
 	@Transactional
-	public Appointment updateAppointmentStatus(Integer id, String status) {
+	public Appointment updateAppointmentStatus(Integer id, String status) throws ResourceNotFoundException {
 		Appointment existingAppointment = appointmentRepository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id: " + id));
 		existingAppointment.setStatus(status);
@@ -119,26 +112,5 @@ public class AppointmentServiceImpl implements AppointmentService {
 			throw new ResourceNotFoundException("Appointment not found with id: " + id);
 		}
 		appointmentRepository.deleteById(id);
-	}
-
-	private Appointment convertToEntity(AppointmentDTO appointmentDTO) throws ResourceNotFoundException {
-		Appointment appointment = new Appointment();
-
-		if ( appointmentDTO.getPatientId() == null ) {
-			throw new IllegalArgumentException("Patient ID cannot be null for a new appointment.");
-		}
-		Patient patient = patientRepository.findById(appointmentDTO.getPatientId())
-			.orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + appointmentDTO.getPatientId()));
-		appointment.setPatient(patient);
-
-		if ( appointmentDTO.getDoctorId() == null ) {
-			throw new IllegalArgumentException("Doctor ID cannot be null for a new appointment.");
-		}
-		Doctor doctor = doctorRepository.findById(appointmentDTO.getDoctorId())
-			.orElseThrow(() -> new ResourceNotFoundException("Doctor not found with id: " + appointmentDTO.getDoctorId()));
-		appointment.setDoctor(doctor);
-		appointment.setAppointmentDate(appointmentDTO.getAppointmentDate());
-		appointment.setReason(appointmentDTO.getReason());
-		return appointment;
 	}
 }
