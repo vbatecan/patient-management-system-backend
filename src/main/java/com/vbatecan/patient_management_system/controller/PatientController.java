@@ -1,5 +1,7 @@
 package com.vbatecan.patient_management_system.controller;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vbatecan.patient_management_system.dto.MessageResponse;
 import com.vbatecan.patient_management_system.dto.PatientDTO;
 import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
@@ -28,6 +30,7 @@ import java.util.Optional;
 public class PatientController {
 
 	private final PatientService patientService;
+	private final ObjectMapper mapper = new ObjectMapper();
 
 	@Operation(summary = "Create a new patient", description = "Creates a new patient record in the system.")
 	@ApiResponses(value = {
@@ -40,8 +43,8 @@ public class PatientController {
 	})
 	@PostMapping
 	public ResponseEntity<PatientDTO> createPatient(@Valid @RequestBody PatientDTO patientDTO) {
-		Patient savedPatient = patientService.save(patientDTO);
-		return new ResponseEntity<>(convertToDTO(savedPatient), HttpStatus.CREATED);
+		Optional<Patient> savedPatient = patientService.save(patientDTO);
+		return new ResponseEntity<>(mapper.convertValue(savedPatient, PatientDTO.class), HttpStatus.CREATED);
 	}
 
 	@Operation(summary = "Get a patient by ID", description = "Retrieves a specific patient by their unique ID.")
@@ -55,7 +58,7 @@ public class PatientController {
 	public ResponseEntity<PatientDTO> getPatientById(@PathVariable Integer id) {
 		Optional<Patient> patientOptional = patientService.findById(id);
 		return patientOptional
-			.map(patient -> ResponseEntity.ok(convertToDTO(patient)))
+			.map(patient -> ResponseEntity.ok(mapper.convertValue(patient, PatientDTO.class)))
 			.orElseGet(() -> ResponseEntity.notFound().build());
 	}
 
@@ -67,7 +70,7 @@ public class PatientController {
 	@GetMapping
 	public ResponseEntity<Page<PatientDTO>> getAllPatients(Pageable pageable) {
 		Page<Patient> patients = patientService.findAll(pageable);
-		Page<PatientDTO> patientDTOs = patients.map(this::convertToDTO);
+		Page<PatientDTO> patientDTOs = patients.map(patient -> mapper.convertValue(patient, PatientDTO.class));
 		return ResponseEntity.ok(patientDTOs);
 	}
 
@@ -81,9 +84,13 @@ public class PatientController {
 			content = @Content(mediaType = "text/plain"))
 	})
 	@PutMapping("/{id}")
-	public ResponseEntity<PatientDTO> updatePatient(@PathVariable Integer id, @Valid @RequestBody PatientDTO patientDTO) {
-		Patient updatedPatient = patientService.update(id, patientDTO);
-		return ResponseEntity.ok(convertToDTO(updatedPatient));
+	public ResponseEntity<?> updatePatient(@PathVariable Integer id, @Valid @RequestBody PatientDTO patientDTO) {
+		try {
+			Optional<Patient> updatedPatient = patientService.update(id, patientDTO);
+			return ResponseEntity.ok(mapper.convertValue(updatedPatient, PatientDTO.class));
+		} catch ( JsonMappingException e ) {
+			return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage(), false));
+		}
 	}
 
 	@Operation(summary = "Delete a patient", description = "Deletes a patient by their ID.")

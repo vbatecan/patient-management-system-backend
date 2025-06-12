@@ -129,6 +129,7 @@ public class AppointmentController {
 		if ( status == null || status.trim().isEmpty() ) {
 			return ResponseEntity.badRequest().build();
 		}
+
 		try {
 			Appointment updatedAppointment = appointmentService.updateAppointmentStatus(id, status);
 			return ResponseEntity.ok(mapper.convertValue(updatedAppointment, AppointmentDTO.class));

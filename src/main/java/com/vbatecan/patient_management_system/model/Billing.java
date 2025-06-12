@@ -31,7 +31,11 @@ public class Billing {
 	@Column(nullable = false)
 	private BigDecimal amount;
 
+	@Column(nullable = false)
 	private String status = "PENDING";
+
+	@Column(name = "details")
+	private String details;
 
 	@Column(name = "billing_date")
 	private LocalDateTime billingDate;
