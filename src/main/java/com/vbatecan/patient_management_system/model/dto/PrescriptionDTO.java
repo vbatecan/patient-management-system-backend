@@ -1,6 +1,5 @@
-package com.vbatecan.patient_management_system.dto;
+package com.vbatecan.patient_management_system.model.dto;
 
-import com.vbatecan.patient_management_system.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,10 +9,12 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserAccountDTO {
+public class PrescriptionDTO {
 	private Integer id;
-	private String username;
-	private Role role;
+	private Integer appointmentId;
+	private String medication;
+	private String dosage;
+	private String instructions;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 }

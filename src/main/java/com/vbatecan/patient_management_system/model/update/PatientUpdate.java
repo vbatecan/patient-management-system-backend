@@ -1,6 +1,6 @@
-package com.vbatecan.patient_management_system.dto.input;
+package com.vbatecan.patient_management_system.model.update;
 
-import com.vbatecan.patient_management_system.dto.UserAccountDTO;
+import com.vbatecan.patient_management_system.model.dto.UserAccountDTO;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.PastOrPresent;

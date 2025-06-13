@@ -1,4 +1,4 @@
-package com.vbatecan.patient_management_system.dto.input;
+package com.vbatecan.patient_management_system.model.input;
 
 import com.vbatecan.patient_management_system.enums.Role;
 import jakarta.annotation.Nonnull;

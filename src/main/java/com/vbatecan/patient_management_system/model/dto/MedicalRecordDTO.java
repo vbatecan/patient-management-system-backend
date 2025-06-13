@@ -1,4 +1,4 @@
-package com.vbatecan.patient_management_system.dto;
+package com.vbatecan.patient_management_system.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,14 +9,12 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DoctorDTO {
+public class MedicalRecordDTO {
 	private Integer id;
-	private Integer userAccountId;
-	private String firstName;
-	private String lastName;
-	private String specialty;
-	private String contactNumber;
-	private String email;
+	private Integer patientId;
+	private LocalDateTime recordDate;
+	private String description;
+	private String filePath;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
-}
+} 

@@ -1,4 +1,4 @@
-package com.vbatecan.patient_management_system.model;
+package com.vbatecan.patient_management_system.model.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "appointment")
-public class Appointment {
+@Table(name = "medical_record")
+public class MedicalRecord {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -23,15 +23,11 @@ public class Appointment {
 	@JoinColumn(name = "patient_id")
 	private Patient patient;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "doctor_id")
-	private Doctor doctor;
+	@Column(name = "record_date", nullable = false)
+	private LocalDateTime recordDate;
 
-	@Column(name = "appointment_date", nullable = false)
-	private LocalDateTime appointmentDate;
-
-	private String reason;
-	private String status = "SCHEDULED";
+	private String description;
+	private String filePath;
 
 	@Column(name = "created_at")
 	private LocalDateTime createdAt;

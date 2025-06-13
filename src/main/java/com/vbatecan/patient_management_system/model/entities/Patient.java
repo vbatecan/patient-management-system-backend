@@ -1,4 +1,4 @@
-package com.vbatecan.patient_management_system.model;
+package com.vbatecan.patient_management_system.model.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

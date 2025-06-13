@@ -1,4 +1,4 @@
-package com.vbatecan.patient_management_system.dto;
+package com.vbatecan.patient_management_system.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

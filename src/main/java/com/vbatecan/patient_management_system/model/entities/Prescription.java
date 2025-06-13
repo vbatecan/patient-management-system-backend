@@ -1,4 +1,4 @@
-package com.vbatecan.patient_management_system.model;
+package com.vbatecan.patient_management_system.model.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -13,25 +13,21 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "doctor")
-public class Doctor {
+@Table(name = "prescription")
+public class Prescription {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_account_id")
-	private UserAccount userAccount;
+	@JoinColumn(name = "appointment_id")
+	private Appointment appointment;
 
-	@Column(name = "first_name", nullable = false)
-	private String firstName;
+	@Column(nullable = false)
+	private String medication;
 
-	@Column(name = "last_name", nullable = false)
-	private String lastName;
-
-	private String specialty;
-	private String contactNumber;
-	private String email;
+	private String dosage;
+	private String instructions;
 
 	@Column(name = "created_at")
 	private LocalDateTime createdAt;

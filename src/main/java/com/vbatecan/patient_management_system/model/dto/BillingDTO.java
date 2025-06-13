@@ -1,24 +1,22 @@
-package com.vbatecan.patient_management_system.dto;
+package com.vbatecan.patient_management_system.model.dto;
 
-import jakarta.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AppointmentDTO {
-	@Nonnull
+public class BillingDTO {
 	private Integer id;
-	private LocalDateTime appointmentDate;
-	private String reason;
+	private Integer patientId;
+	private Integer appointmentId;
+	private BigDecimal amount;
 	private String status;
-	private PatientDTO patient;
-	private DoctorDTO doctor;
+	private LocalDateTime billingDate;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 }
