@@ -1,6 +1,6 @@
 package com.vbatecan.patient_management_system.repository;
 
-import com.vbatecan.patient_management_system.model.MedicalRecord;
+import com.vbatecan.patient_management_system.model.entities.MedicalRecord;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
