@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -15,6 +18,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @Table(name = "billing")
+@Indexed
 public class Billing {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,13 +26,16 @@ public class Billing {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "patient_id")
+	@IndexedEmbedded
 	private Patient patient;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "appointment_id")
+	@IndexedEmbedded
 	private Appointment appointment;
 
 	@Column(nullable = false)
+	@GenericField
 	private BigDecimal amount;
 
 	@Column(nullable = false)
