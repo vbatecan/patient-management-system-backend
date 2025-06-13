@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AppointmentDTO {
+	// Add Validation for appointment dto. AI!
 	@NotNull
 	private Integer id;
 	private LocalDateTime appointmentDate;
