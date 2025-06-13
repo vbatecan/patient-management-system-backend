@@ -1,7 +1,7 @@
-package com.vbatecan.patient_management_system.service;
+package com.vbatecan.patient_management_system.service.interfaces;
 
-import com.vbatecan.patient_management_system.dto.PrescriptionDTO;
-import com.vbatecan.patient_management_system.model.Prescription;
+import com.vbatecan.patient_management_system.model.dto.PrescriptionDTO;
+import com.vbatecan.patient_management_system.model.entities.Prescription;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

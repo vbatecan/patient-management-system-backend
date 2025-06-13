@@ -1,7 +1,7 @@
-package com.vbatecan.patient_management_system.service;
+package com.vbatecan.patient_management_system.service.interfaces;
 
-import com.vbatecan.patient_management_system.dto.BillingDTO;
-import com.vbatecan.patient_management_system.model.Billing; // Added import
+import com.vbatecan.patient_management_system.model.dto.BillingDTO;
+import com.vbatecan.patient_management_system.model.entities.Billing; // Added import
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

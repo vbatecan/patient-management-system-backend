@@ -1,8 +1,8 @@
-package com.vbatecan.patient_management_system.service;
+package com.vbatecan.patient_management_system.service.interfaces;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.vbatecan.patient_management_system.dto.PatientDTO;
-import com.vbatecan.patient_management_system.model.Patient;
+import com.vbatecan.patient_management_system.model.dto.PatientDTO;
+import com.vbatecan.patient_management_system.model.entities.Patient;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

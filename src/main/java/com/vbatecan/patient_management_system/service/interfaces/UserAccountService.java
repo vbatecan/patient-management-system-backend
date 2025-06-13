@@ -1,8 +1,8 @@
-package com.vbatecan.patient_management_system.service;
+package com.vbatecan.patient_management_system.service.interfaces;
 
-import com.vbatecan.patient_management_system.dto.input.UserAccountInput;
+import com.vbatecan.patient_management_system.model.input.UserAccountInput;
 import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
-import com.vbatecan.patient_management_system.model.UserAccount;
+import com.vbatecan.patient_management_system.model.entities.UserAccount;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
