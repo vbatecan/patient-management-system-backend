@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+// Create a custom enum for field `status` it has like "SCHEDULED", "COMPLETED", "CANCELLED", "NOT_SCHEDULED". AI!
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
