@@ -1,9 +1,9 @@
 package com.vbatecan.patient_management_system.controller;
 
-import com.vbatecan.patient_management_system.dto.MedicalRecordDTO;
+import com.vbatecan.patient_management_system.model.dto.MedicalRecordDTO;
 import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
-import com.vbatecan.patient_management_system.model.MedicalRecord;
-import com.vbatecan.patient_management_system.service.MedicalRecordService;
+import com.vbatecan.patient_management_system.model.entities.MedicalRecord;
+import com.vbatecan.patient_management_system.service.interfaces.MedicalRecordService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

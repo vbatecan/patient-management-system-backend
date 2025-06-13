@@ -1,8 +1,8 @@
 package com.vbatecan.patient_management_system.controller;
 
-import com.vbatecan.patient_management_system.dto.BillingDTO;
-import com.vbatecan.patient_management_system.model.Billing;
-import com.vbatecan.patient_management_system.service.BillingService;
+import com.vbatecan.patient_management_system.model.dto.BillingDTO;
+import com.vbatecan.patient_management_system.model.entities.Billing;
+import com.vbatecan.patient_management_system.service.interfaces.BillingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

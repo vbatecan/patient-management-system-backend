@@ -1,9 +1,9 @@
 package com.vbatecan.patient_management_system.controller;
 
-import com.vbatecan.patient_management_system.dto.PrescriptionDTO;
+import com.vbatecan.patient_management_system.model.dto.PrescriptionDTO;
 import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
-import com.vbatecan.patient_management_system.model.Prescription;
-import com.vbatecan.patient_management_system.service.PrescriptionService;
+import com.vbatecan.patient_management_system.model.entities.Prescription;
+import com.vbatecan.patient_management_system.service.interfaces.PrescriptionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

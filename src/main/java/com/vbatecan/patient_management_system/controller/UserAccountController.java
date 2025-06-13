@@ -1,11 +1,11 @@
 package com.vbatecan.patient_management_system.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vbatecan.patient_management_system.dto.UserAccountDTO;
-import com.vbatecan.patient_management_system.dto.input.UserAccountInput;
+import com.vbatecan.patient_management_system.model.dto.UserAccountDTO;
+import com.vbatecan.patient_management_system.model.input.UserAccountInput;
 import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
-import com.vbatecan.patient_management_system.model.UserAccount;
-import com.vbatecan.patient_management_system.service.UserAccountService;
+import com.vbatecan.patient_management_system.model.entities.UserAccount;
+import com.vbatecan.patient_management_system.service.interfaces.UserAccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
