@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PatientDTO {
+	// add validation for PatientDTO. AI!
 	private Integer id;
 	private UserAccountDTO userAccount;
 	private String firstName;
