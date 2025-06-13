@@ -74,9 +74,9 @@ public class DoctorServiceImpl implements DoctorService {
 		existingDoctor.setEmail(doctorDTO.getEmail());
 		existingDoctor.setUpdatedAt(LocalDateTime.now());
 
-		if ( doctorDTO.getUserAccountId() != null ) {
-			UserAccount userAccount = userAccountRepository.findById(doctorDTO.getUserAccountId())
-				.orElseThrow(() -> new ResourceNotFoundException("UserAccount not found with id: " + doctorDTO.getUserAccountId()));
+		if ( doctorDTO.getUserAccount() != null ) {
+			UserAccount userAccount = userAccountRepository.findById(doctorDTO.getUserAccount())
+				.orElseThrow(() -> new ResourceNotFoundException("UserAccount not found with id: " + doctorDTO.getUserAccount()));
 			if ( userAccount.getRole() != Role.DOCTOR ) {
 				throw new IllegalArgumentException("UserAccount provided for Doctor must have DOCTOR role.");
 			}
@@ -100,12 +100,12 @@ public class DoctorServiceImpl implements DoctorService {
 
 	private Doctor convertToEntity(DoctorDTO doctorDTO) {
 		Doctor doctor = new Doctor();
-		if ( doctorDTO.getUserAccountId() == null ) {
+		if ( doctorDTO.getUserAccount() == null ) {
 			throw new IllegalArgumentException("UserAccountId is required for a Doctor entity.");
 		}
 
-		UserAccount userAccount = userAccountRepository.findById(doctorDTO.getUserAccountId())
-			.orElseThrow(() -> new ResourceNotFoundException("UserAccount not found with id: " + doctorDTO.getUserAccountId()));
+		UserAccount userAccount = userAccountRepository.findById(doctorDTO.getUserAccount())
+			.orElseThrow(() -> new ResourceNotFoundException("UserAccount not found with id: " + doctorDTO.getUserAccount()));
 		doctor.setUserAccount(userAccount);
 
 		doctor.setFirstName(doctorDTO.getFirstName());

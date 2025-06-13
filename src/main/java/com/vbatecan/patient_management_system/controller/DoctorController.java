@@ -139,7 +139,7 @@ public class DoctorController {
 		DoctorDTO dto = new DoctorDTO();
 		dto.setId(doctor.getId());
 		if (doctor.getUserAccount() != null) {
-			dto.setUserAccountId(doctor.getUserAccount().getId());
+			dto.setUserAccount(doctor.getUserAccount().getId());
 		}
 		dto.setFirstName(doctor.getFirstName());
 		dto.setLastName(doctor.getLastName());

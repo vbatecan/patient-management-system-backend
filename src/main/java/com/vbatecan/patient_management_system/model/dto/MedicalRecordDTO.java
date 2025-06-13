@@ -1,9 +1,6 @@
 package com.vbatecan.patient_management_system.model.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,7 +27,8 @@ public class MedicalRecordDTO {
 	private String description;
 
 	@Size(max = 255, message = "File path must be less than 255 characters.")
-	private String filePath; // File path can be optional
+	@Null
+	private String filePath;
 
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;

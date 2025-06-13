@@ -19,7 +19,7 @@ public class DoctorDTO {
 	private Integer id;
 
 	@NotNull(message = "User account ID cannot be null.")
-	private Integer userAccountId;
+	private UserAccountDTO userAccount;
 
 	@NotBlank(message = "First name cannot be blank.")
 	@Size(min = 2, max = 50, message = "First name must be between 2 and 50 characters.")
