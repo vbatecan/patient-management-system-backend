@@ -1,15 +1,16 @@
 package com.vbatecan.patient_management_system.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vbatecan.patient_management_system.dto.AppointmentDTO;
+import com.vbatecan.patient_management_system.model.dto.AppointmentDTO;
 import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
-import com.vbatecan.patient_management_system.model.Appointment;
-import com.vbatecan.patient_management_system.model.Doctor;
-import com.vbatecan.patient_management_system.model.Patient;
+import com.vbatecan.patient_management_system.model.entities.Appointment;
+import com.vbatecan.patient_management_system.model.entities.Doctor;
+import com.vbatecan.patient_management_system.model.entities.Patient;
+import com.vbatecan.patient_management_system.model.filter.AppointmentFilter;
 import com.vbatecan.patient_management_system.repository.AppointmentRepository;
 import com.vbatecan.patient_management_system.repository.DoctorRepository;
 import com.vbatecan.patient_management_system.repository.PatientRepository;
-import com.vbatecan.patient_management_system.service.AppointmentService;
+import com.vbatecan.patient_management_system.service.interfaces.AppointmentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

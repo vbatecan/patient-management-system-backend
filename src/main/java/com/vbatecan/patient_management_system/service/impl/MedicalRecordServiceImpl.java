@@ -1,12 +1,12 @@
 package com.vbatecan.patient_management_system.service.impl;
 
-import com.vbatecan.patient_management_system.dto.MedicalRecordDTO;
+import com.vbatecan.patient_management_system.model.dto.MedicalRecordDTO;
 import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
-import com.vbatecan.patient_management_system.model.MedicalRecord;
-import com.vbatecan.patient_management_system.model.Patient;
+import com.vbatecan.patient_management_system.model.entities.MedicalRecord;
+import com.vbatecan.patient_management_system.model.entities.Patient;
 import com.vbatecan.patient_management_system.repository.MedicalRecordRepository;
 import com.vbatecan.patient_management_system.repository.PatientRepository;
-import com.vbatecan.patient_management_system.service.MedicalRecordService;
+import com.vbatecan.patient_management_system.service.interfaces.MedicalRecordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

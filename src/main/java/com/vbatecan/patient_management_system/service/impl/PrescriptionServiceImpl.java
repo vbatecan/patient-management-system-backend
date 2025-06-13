@@ -1,12 +1,12 @@
 package com.vbatecan.patient_management_system.service.impl;
 
-import com.vbatecan.patient_management_system.dto.PrescriptionDTO;
+import com.vbatecan.patient_management_system.model.dto.PrescriptionDTO;
 import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
-import com.vbatecan.patient_management_system.model.Appointment;
-import com.vbatecan.patient_management_system.model.Prescription;
+import com.vbatecan.patient_management_system.model.entities.Appointment;
+import com.vbatecan.patient_management_system.model.entities.Prescription;
 import com.vbatecan.patient_management_system.repository.AppointmentRepository;
 import com.vbatecan.patient_management_system.repository.PrescriptionRepository;
-import com.vbatecan.patient_management_system.service.PrescriptionService;
+import com.vbatecan.patient_management_system.service.interfaces.PrescriptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

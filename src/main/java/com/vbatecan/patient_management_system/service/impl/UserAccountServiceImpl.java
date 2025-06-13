@@ -1,10 +1,10 @@
 package com.vbatecan.patient_management_system.service.impl;
 
-import com.vbatecan.patient_management_system.dto.input.UserAccountInput;
+import com.vbatecan.patient_management_system.model.input.UserAccountInput;
 import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
-import com.vbatecan.patient_management_system.model.UserAccount;
+import com.vbatecan.patient_management_system.model.entities.UserAccount;
 import com.vbatecan.patient_management_system.repository.UserAccountRepository;
-import com.vbatecan.patient_management_system.service.UserAccountService;
+import com.vbatecan.patient_management_system.service.interfaces.UserAccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

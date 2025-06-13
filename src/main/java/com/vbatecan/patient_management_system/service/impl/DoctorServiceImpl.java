@@ -1,13 +1,13 @@
 package com.vbatecan.patient_management_system.service.impl;
 
-import com.vbatecan.patient_management_system.dto.DoctorDTO;
+import com.vbatecan.patient_management_system.model.dto.DoctorDTO;
 import com.vbatecan.patient_management_system.enums.Role;
 import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
-import com.vbatecan.patient_management_system.model.Doctor;
-import com.vbatecan.patient_management_system.model.UserAccount;
+import com.vbatecan.patient_management_system.model.entities.Doctor;
+import com.vbatecan.patient_management_system.model.entities.UserAccount;
 import com.vbatecan.patient_management_system.repository.DoctorRepository;
 import com.vbatecan.patient_management_system.repository.UserAccountRepository;
-import com.vbatecan.patient_management_system.service.DoctorService;
+import com.vbatecan.patient_management_system.service.interfaces.DoctorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
