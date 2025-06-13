@@ -1,5 +1,6 @@
 package com.vbatecan.patient_management_system.model.dto;
 
+import com.vbatecan.patient_management_system.model.enums.AppointmentStatus;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
@@ -9,8 +10,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-
-// Create a custom enum for field `status` it has like "SCHEDULED", "COMPLETED", "CANCELLED", "NOT_SCHEDULED". AI!
 
 @Data
 @NoArgsConstructor
@@ -28,8 +27,7 @@ public class AppointmentDTO {
 	private String reason;
 
 	@NotNull(message = "Status cannot be null.")
-	@NotBlank(message = "Status cannot be blank.")
-	private String status;
+	private AppointmentStatus status;
 
 	@NotNull(message = "Patient cannot be null.")
 	@Valid
