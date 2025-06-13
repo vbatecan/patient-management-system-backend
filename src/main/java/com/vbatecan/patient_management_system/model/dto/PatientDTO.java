@@ -17,6 +17,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class PatientDTO {
 
+	// make sure to add @Size to prevent the front end from sending too long data or too short data. AI!
+
 	@NotNull(message = "ID cannot be null.")
 	private Integer id;
 
