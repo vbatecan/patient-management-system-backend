@@ -17,8 +17,8 @@ public class PrescriptionDTO {
 	@NotNull(message = "ID cannot be null.")
 	private Integer id;
 
-	@NotNull(message = "Appointment ID cannot be null.")
-	private Integer appointmentId;
+	@NotNull(message = "Appointment cannot be null.")
+	private AppointmentDTO appointment;
 
 	@NotBlank(message = "Medication cannot be blank.")
 	@Size(min = 2, max = 100, message = "Medication must be between 2 and 100 characters.")
