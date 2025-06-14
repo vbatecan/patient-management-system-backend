@@ -9,8 +9,13 @@ import lombok.Setter;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,7 +24,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "user_account")
 @Indexed
-public class UserAccount {
+public class UserAccount implements UserDetails {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -43,4 +48,10 @@ public class UserAccount {
 	@Column(name = "updated_at")
 	@GenericField
 	private LocalDateTime updatedAt;
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return List.of(new GrantedAuthority[]{new SimpleGrantedAuthority(role.name())});
+	}
+
 }
