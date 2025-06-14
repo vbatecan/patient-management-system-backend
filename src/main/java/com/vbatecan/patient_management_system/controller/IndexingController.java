@@ -1,6 +1,6 @@
 package com.vbatecan.patient_management_system.controller;
 
-import com.vbatecan.patient_management_system.model.dto.MessageResponse;
+import com.vbatecan.patient_management_system.model.responses.MessageResponse;
 import com.vbatecan.patient_management_system.service.IndexingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

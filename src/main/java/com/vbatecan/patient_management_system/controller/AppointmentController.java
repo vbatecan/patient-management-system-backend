@@ -1,9 +1,13 @@
 package com.vbatecan.patient_management_system.controller;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vbatecan.patient_management_system.model.dto.AppointmentDTO;
 import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
+import com.vbatecan.patient_management_system.model.responses.MessageResponse;
 import com.vbatecan.patient_management_system.model.entities.Appointment;
+import com.vbatecan.patient_management_system.model.input.AppointmentInput;
+import com.vbatecan.patient_management_system.model.update.AppointmentUpdate;
 import com.vbatecan.patient_management_system.service.interfaces.AppointmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -12,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,7 +44,7 @@ public class AppointmentController {
 		@ApiResponse(responseCode = "404", description = "Patient or doctor not found")
 	})
 	@PostMapping
-	public ResponseEntity<AppointmentDTO> createAppointment(@RequestBody AppointmentDTO appointmentDTO) {
+	public ResponseEntity<AppointmentDTO> createAppointment(@RequestBody AppointmentInput appointmentDTO) {
 		Appointment savedAppointment = appointmentService.save(appointmentDTO);
 		return new ResponseEntity<>(mapper.convertValue(savedAppointment, AppointmentDTO.class), HttpStatus.CREATED);
 	}
@@ -104,11 +109,11 @@ public class AppointmentController {
 		@ApiResponse(responseCode = "404", description = "Appointment not found")
 	})
 	@PutMapping("/{id}")
-	public ResponseEntity<AppointmentDTO> updateAppointment(
+	public ResponseEntity<?> updateAppointment(
 		@Parameter(description = "ID of the appointment to update", required = true) @PathVariable Integer id,
-		@RequestBody AppointmentDTO appointmentDTO) {
+		@RequestBody @Valid AppointmentUpdate appointmentUpdate) throws JsonMappingException {
 		try {
-			Appointment updatedAppointment = appointmentService.update(id, appointmentDTO);
+			Appointment updatedAppointment = appointmentService.update(id, appointmentUpdate);
 			return ResponseEntity.ok(mapper.convertValue(updatedAppointment, AppointmentDTO.class));
 		} catch ( ResourceNotFoundException e ) {
 			return ResponseEntity.notFound().build();
@@ -152,5 +157,14 @@ public class AppointmentController {
 		} catch ( ResourceNotFoundException e ) {
 			return ResponseEntity.notFound().build();
 		}
+	}
+
+	// Region: Exception Handler
+	@ExceptionHandler(JsonMappingException.class)
+	public ResponseEntity<MessageResponse> handleJsonMappingException(JsonMappingException e) {
+		return ResponseEntity.badRequest().body(new MessageResponse(
+			"Malformed JSON data, please try again with proper json structure.",
+			false
+		));
 	}
 }

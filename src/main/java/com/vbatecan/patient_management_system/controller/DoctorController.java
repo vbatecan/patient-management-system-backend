@@ -1,8 +1,12 @@
 package com.vbatecan.patient_management_system.controller;
 
-import com.vbatecan.patient_management_system.model.dto.DoctorDTO;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
+import com.vbatecan.patient_management_system.model.dto.DoctorDTO;
+import com.vbatecan.patient_management_system.model.responses.MessageResponse;
 import com.vbatecan.patient_management_system.model.entities.Doctor;
+import com.vbatecan.patient_management_system.model.update.DoctorUpdate;
 import com.vbatecan.patient_management_system.service.interfaces.DoctorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,6 +31,7 @@ import java.util.Optional;
 public class DoctorController {
 
 	private final DoctorService doctorService;
+	private final ObjectMapper mapper;
 
 	@Operation(summary = "Create a new doctor", description = "Creates a new doctor record in the system.")
 	@ApiResponses(value = {
@@ -38,7 +43,7 @@ public class DoctorController {
 	@PostMapping
 	public ResponseEntity<DoctorDTO> createDoctor(@Valid @RequestBody DoctorDTO doctorDTO) {
 		Doctor savedDoctor = doctorService.save(doctorDTO);
-		return new ResponseEntity<>(convertToDTO(savedDoctor), HttpStatus.CREATED);
+		return new ResponseEntity<>(mapper.convertValue(savedDoctor, DoctorDTO.class), HttpStatus.CREATED);
 	}
 
 	@Operation(summary = "Get a doctor by ID", description = "Retrieves a specific doctor by their unique ID.")
@@ -52,7 +57,7 @@ public class DoctorController {
 	public ResponseEntity<DoctorDTO> getDoctorById(@PathVariable Integer id) {
 		Optional<Doctor> doctorOptional = doctorService.findById(id);
 		return doctorOptional
-			.map(doctor -> ResponseEntity.ok(convertToDTO(doctor)))
+			.map(doctor -> ResponseEntity.ok(mapper.convertValue(doctor, DoctorDTO.class)))
 			.orElseGet(() -> ResponseEntity.notFound().build());
 	}
 
@@ -67,7 +72,7 @@ public class DoctorController {
 	public ResponseEntity<DoctorDTO> getDoctorByUserAccountId(@PathVariable Integer userAccountId) {
 		Optional<Doctor> doctorOptional = doctorService.findByUserAccountId(userAccountId);
 		return doctorOptional
-			.map(doctor -> ResponseEntity.ok(convertToDTO(doctor)))
+			.map(doctor -> ResponseEntity.ok(mapper.convertValue(doctor, DoctorDTO.class)))
 			.orElseGet(() -> ResponseEntity.notFound().build());
 	}
 
@@ -82,7 +87,7 @@ public class DoctorController {
 	public ResponseEntity<DoctorDTO> getDoctorByEmail(@PathVariable String email) {
 		Optional<Doctor> doctorOptional = doctorService.findByEmail(email);
 		return doctorOptional
-			.map(doctor -> ResponseEntity.ok(convertToDTO(doctor)))
+			.map(doctor -> ResponseEntity.ok(mapper.convertValue(doctor, DoctorDTO.class)))
 			.orElseGet(() -> ResponseEntity.notFound().build());
 	}
 
@@ -94,7 +99,7 @@ public class DoctorController {
 	@GetMapping
 	public ResponseEntity<Page<DoctorDTO>> getAllDoctors(Pageable pageable) {
 		Page<Doctor> doctors = doctorService.findAll(pageable);
-		Page<DoctorDTO> doctorDTOs = doctors.map(this::convertToDTO);
+		Page<DoctorDTO> doctorDTOs = doctors.map(doctor -> mapper.convertValue(doctor, DoctorDTO.class));
 		return ResponseEntity.ok(doctorDTOs);
 	}
 
@@ -108,9 +113,9 @@ public class DoctorController {
 			content = @Content(mediaType = "text/plain"))
 	})
 	@PutMapping("/{id}")
-	public ResponseEntity<DoctorDTO> updateDoctor(@PathVariable Integer id, @Valid @RequestBody DoctorDTO doctorDTO) {
-		Doctor updatedDoctor = doctorService.update(id, doctorDTO);
-		return ResponseEntity.ok(convertToDTO(updatedDoctor));
+	public ResponseEntity<DoctorDTO> updateDoctor(@PathVariable Integer id, @Valid @RequestBody DoctorUpdate doctorUpdate) throws JsonMappingException {
+		Doctor updatedDoctor = doctorService.update(id, doctorUpdate);
+		return ResponseEntity.ok(mapper.convertValue(updatedDoctor, DoctorDTO.class));
 	}
 
 	@Operation(summary = "Delete a doctor", description = "Deletes a doctor by their ID.")
@@ -134,20 +139,13 @@ public class DoctorController {
 	public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
 	}
-	
-	private DoctorDTO convertToDTO(Doctor doctor) {
-		DoctorDTO dto = new DoctorDTO();
-		dto.setId(doctor.getId());
-		if (doctor.getUserAccount() != null) {
-			dto.setUserAccount(doctor.getUserAccount().getId());
-		}
-		dto.setFirstName(doctor.getFirstName());
-		dto.setLastName(doctor.getLastName());
-		dto.setSpecialty(doctor.getSpecialty());
-		dto.setContactNumber(doctor.getContactNumber());
-		dto.setEmail(doctor.getEmail());
-		dto.setCreatedAt(doctor.getCreatedAt());
-		dto.setUpdatedAt(doctor.getUpdatedAt());
-		return dto;
+
+	// Region: Exception Handlers
+	@ExceptionHandler(JsonMappingException.class)
+	public ResponseEntity<MessageResponse> handleJsonMappingException(JsonMappingException ex) {
+		return ResponseEntity.badRequest().body(new MessageResponse(
+			"Malformed JSON data, please try again with proper json structure.",
+			false
+		));
 	}
 }
