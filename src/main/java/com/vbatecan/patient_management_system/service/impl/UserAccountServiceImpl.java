@@ -8,6 +8,7 @@ import com.vbatecan.patient_management_system.service.interfaces.UserAccountServ
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +21,7 @@ import java.util.Optional;
 public class UserAccountServiceImpl implements UserAccountService {
 
 	private final UserAccountRepository userAccountRepository;
-	private final PasswordEncoder passwordEncoder;
+	private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 	@Override
 	@Transactional

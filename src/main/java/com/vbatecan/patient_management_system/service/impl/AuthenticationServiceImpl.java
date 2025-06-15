@@ -9,6 +9,7 @@ import com.vbatecan.patient_management_system.service.interfaces.UserAccountServ
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -19,6 +20,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 	private final UserAccountService userService;
 	private final JwtService jwtService;
+	private final PasswordEncoder passwordEncoder;
 
 	@Override
 	public Optional<SuccessfulLoginResponse> login(AuthenticationInput input) throws UsernameNotFoundException {
@@ -28,7 +30,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			);
 
 		try {
-			if ( account.getPassword() != null && account.getPassword().equals(input.getPassword()) ) {
+			if ( account.getPassword() != null && passwordEncoder.matches(input.getPassword(), account.getPassword()) ) {
 				String token = jwtService.generateToken(account);
 				return Optional.of(new SuccessfulLoginResponse(token, account.getUsername(), account.getRole()));
 			}
