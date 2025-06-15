@@ -1,6 +1,5 @@
 package com.vbatecan.patient_management_system.controller;
 
-import com.vbatecan.patient_management_system.model.entities.UserAccount;
 import com.vbatecan.patient_management_system.model.input.AuthenticationInput;
 import com.vbatecan.patient_management_system.model.responses.MessageResponse;
 import com.vbatecan.patient_management_system.model.responses.SuccessfulLoginResponse;
@@ -8,11 +7,9 @@ import com.vbatecan.patient_management_system.service.interfaces.AuthenticationS
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;

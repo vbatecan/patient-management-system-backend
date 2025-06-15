@@ -1,7 +1,7 @@
 package com.vbatecan.patient_management_system.service.interfaces;
 
 import com.vbatecan.patient_management_system.model.dto.MedicalRecordDTO;
-import com.vbatecan.patient_management_system.model.entities.MedicalRecord; // Added import
+import com.vbatecan.patient_management_system.model.entities.MedicalRecord;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

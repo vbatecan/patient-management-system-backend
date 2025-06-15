@@ -1,6 +1,5 @@
 package com.vbatecan.patient_management_system.service.interfaces;
 
-import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
 import com.vbatecan.patient_management_system.model.input.AuthenticationInput;
 import com.vbatecan.patient_management_system.model.responses.SuccessfulLoginResponse;
 import org.springframework.security.core.context.SecurityContext;

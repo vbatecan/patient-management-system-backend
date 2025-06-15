@@ -2,11 +2,11 @@ package com.vbatecan.patient_management_system.controller;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vbatecan.patient_management_system.model.dto.AppointmentDTO;
 import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
-import com.vbatecan.patient_management_system.model.responses.MessageResponse;
+import com.vbatecan.patient_management_system.model.dto.AppointmentDTO;
 import com.vbatecan.patient_management_system.model.entities.Appointment;
 import com.vbatecan.patient_management_system.model.input.AppointmentInput;
+import com.vbatecan.patient_management_system.model.responses.MessageResponse;
 import com.vbatecan.patient_management_system.model.update.AppointmentUpdate;
 import com.vbatecan.patient_management_system.service.interfaces.AppointmentService;
 import io.swagger.v3.oas.annotations.Operation;

@@ -1,10 +1,12 @@
 package com.vbatecan.patient_management_system.model.input;
 
 import com.vbatecan.patient_management_system.enums.Role;
-import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter

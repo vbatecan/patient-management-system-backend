@@ -1,7 +1,7 @@
 package com.vbatecan.patient_management_system.service.impl;
 
-import com.vbatecan.patient_management_system.model.dto.MedicalRecordDTO;
 import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
+import com.vbatecan.patient_management_system.model.dto.MedicalRecordDTO;
 import com.vbatecan.patient_management_system.model.entities.MedicalRecord;
 import com.vbatecan.patient_management_system.model.entities.Patient;
 import com.vbatecan.patient_management_system.repository.MedicalRecordRepository;

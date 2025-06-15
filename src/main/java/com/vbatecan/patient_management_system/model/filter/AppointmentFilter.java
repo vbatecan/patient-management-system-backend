@@ -1,6 +1,5 @@
 package com.vbatecan.patient_management_system.model.filter;
 
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import lombok.Builder;
 import lombok.Getter;

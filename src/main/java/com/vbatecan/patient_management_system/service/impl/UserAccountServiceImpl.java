@@ -1,8 +1,8 @@
 package com.vbatecan.patient_management_system.service.impl;
 
-import com.vbatecan.patient_management_system.model.input.UserAccountInput;
 import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
 import com.vbatecan.patient_management_system.model.entities.UserAccount;
+import com.vbatecan.patient_management_system.model.input.UserAccountInput;
 import com.vbatecan.patient_management_system.repository.UserAccountRepository;
 import com.vbatecan.patient_management_system.service.interfaces.UserAccountService;
 import lombok.RequiredArgsConstructor;
