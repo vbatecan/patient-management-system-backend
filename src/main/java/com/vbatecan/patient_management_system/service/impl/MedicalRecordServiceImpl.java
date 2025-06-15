@@ -1,5 +1,6 @@
 package com.vbatecan.patient_management_system.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
 import com.vbatecan.patient_management_system.model.dto.MedicalRecordDTO;
 import com.vbatecan.patient_management_system.model.entities.MedicalRecord;
@@ -22,11 +23,12 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 
 	private final MedicalRecordRepository medicalRecordRepository;
 	private final PatientRepository patientRepository;
+	private final ObjectMapper mapper = new ObjectMapper();
 
 	@Override
 	@Transactional
 	public MedicalRecord save(MedicalRecordDTO medicalRecordDTO) {
-		MedicalRecord medicalRecord = convertToEntity(medicalRecordDTO);
+		MedicalRecord medicalRecord = mapper.convertValue(medicalRecordDTO, MedicalRecord.class);
 		medicalRecord.setCreatedAt(LocalDateTime.now());
 		medicalRecord.setUpdatedAt(LocalDateTime.now());
 		return medicalRecordRepository.save(medicalRecord);
@@ -53,6 +55,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 	@Override
 	@Transactional
 	public MedicalRecord update(Integer id, MedicalRecordDTO medicalRecordDTO) {
+		// TODO: use mapper updateValue function.
 		MedicalRecord existingMedicalRecord = medicalRecordRepository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("MedicalRecord not found with id: " + id));
 
@@ -82,36 +85,5 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 			throw new ResourceNotFoundException("MedicalRecord not found with id: " + id);
 		}
 		medicalRecordRepository.deleteById(id);
-	}
-
-	// This DTO conversion method is kept for potential internal use or by other layers,
-	// but it's not used by the public methods of this service anymore.
-	private MedicalRecordDTO convertToDTO(MedicalRecord medicalRecord) {
-		MedicalRecordDTO dto = new MedicalRecordDTO();
-		dto.setId(medicalRecord.getId());
-		if ( medicalRecord.getPatient() != null ) {
-			dto.setPatientId(medicalRecord.getPatient().getId());
-		}
-		dto.setRecordDate(medicalRecord.getRecordDate());
-		dto.setDescription(medicalRecord.getDescription());
-		dto.setFilePath(medicalRecord.getFilePath());
-		dto.setCreatedAt(medicalRecord.getCreatedAt());
-		dto.setUpdatedAt(medicalRecord.getUpdatedAt());
-		return dto;
-	}
-
-	private MedicalRecord convertToEntity(MedicalRecordDTO medicalRecordDTO) {
-		MedicalRecord medicalRecord = new MedicalRecord();
-		if ( medicalRecordDTO.getPatientId() == null ) {
-			throw new IllegalArgumentException("Patient ID cannot be null for a new medical record.");
-		}
-		Patient patient = patientRepository.findById(medicalRecordDTO.getPatientId())
-			.orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + medicalRecordDTO.getPatientId()));
-		medicalRecord.setPatient(patient);
-		medicalRecord.setRecordDate(medicalRecordDTO.getRecordDate());
-		medicalRecord.setDescription(medicalRecordDTO.getDescription());
-		medicalRecord.setFilePath(medicalRecordDTO.getFilePath());
-		// Timestamps (createdAt, updatedAt) are handled in save/update methods.
-		return medicalRecord;
 	}
 }
