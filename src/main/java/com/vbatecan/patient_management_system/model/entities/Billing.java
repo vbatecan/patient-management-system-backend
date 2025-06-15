@@ -26,12 +26,12 @@ public class Billing {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "patient_id")
-	@IndexedEmbedded
+	
 	private Patient patient;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "appointment_id")
-	@IndexedEmbedded
+	
 	private Appointment appointment;
 
 	@Column(nullable = false)

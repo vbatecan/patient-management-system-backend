@@ -26,7 +26,7 @@ public class Prescription {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "appointment_id", referencedColumnName = "id")
-	@IndexedEmbedded
+	
 	private Appointment appointment;
 
 	@Column(nullable = false)

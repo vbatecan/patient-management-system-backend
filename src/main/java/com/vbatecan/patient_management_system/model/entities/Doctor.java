@@ -26,7 +26,7 @@ public class Doctor {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_account_id")
-	@IndexedEmbedded
+	
 	private UserAccount userAccount;
 
 	@Column(name = "first_name", nullable = false)

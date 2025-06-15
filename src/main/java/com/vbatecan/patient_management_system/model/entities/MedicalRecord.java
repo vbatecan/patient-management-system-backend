@@ -26,7 +26,7 @@ public class MedicalRecord {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "patient_id")
-	@IndexedEmbedded
+	
 	private Patient patient;
 
 	@Column(name = "record_date", nullable = false)
