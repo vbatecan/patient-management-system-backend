@@ -10,10 +10,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
+import reactor.util.annotation.NonNullApi;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -26,7 +28,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 	private final JwtService jwtService;
 
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+	protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
 		getToken(request).ifPresent(token -> {
 			if (  !jwtService.isTokenExpired(token) && SecurityContextHolder.getContext().getAuthentication() == null ) {
 				String username = jwtService.getUsername(token);
