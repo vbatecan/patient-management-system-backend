@@ -4,6 +4,7 @@ package com.vbatecan.patient_management_system.security;
 import com.vbatecan.patient_management_system.model.entities.UserAccount;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -41,7 +42,7 @@ public class JwtService {
 			.compact();
 	}
 
-	private String getUsername(String token) {
+	public String getUsername(String token) {
 		Claims claims = claims(token);
 		return claims.getSubject();
 	}
@@ -56,8 +57,18 @@ public class JwtService {
 			.getPayload();
 	}
 
+	public boolean isTokenExpired(String token) {
+		Claims claims = claims(token);
+		return claims.getExpiration().before(new Date());
+	}
+
+	public boolean validateToken(String token, UserDetails userDetails) {
+		final String username = getUsername(token);
+		return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+	}
+
 	private SecretKey getKey() {
 		byte[] keyBytes = jwtSecret.getBytes();
-		return new SecretKeySpec(keyBytes, 0, keyBytes.length, "AES");
+		return Keys.hmacShaKeyFor(keyBytes);
 	}
 }
