@@ -1,6 +1,5 @@
 package com.vbatecan.patient_management_system.security;
 
-import com.vbatecan.patient_management_system.config.JwtTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

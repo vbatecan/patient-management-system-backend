@@ -60,4 +60,22 @@ public class AuthenticationController {
 
 		return ResponseEntity.badRequest().body(new MessageResponse("You are not logged in", false));
 	}
+
+	@PostMapping("/logout")
+	public ResponseEntity<?> logout(HttpServletResponse servletResponse) {
+		if (authenticationService.isAuthenticated(SecurityContextHolder.getContext().getAuthentication())) {
+			Cookie cookie = new Cookie("token", null);
+			cookie.setHttpOnly(true);
+			cookie.setSecure(true);
+			cookie.setPath("/");
+			cookie.setMaxAge(0);
+			cookie.setDomain("localhost");
+			SecurityContextHolder.clearContext();
+
+			servletResponse.addCookie(cookie);
+			return ResponseEntity.ok().body(new MessageResponse("You are logged out", true));
+		}
+
+		return ResponseEntity.badRequest().body(new MessageResponse("You are not logged in", false));
+	}
 }

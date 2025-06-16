@@ -1,7 +1,6 @@
-package com.vbatecan.patient_management_system.config;
+package com.vbatecan.patient_management_system.security;
 
 import com.vbatecan.patient_management_system.model.entities.UserAccount;
-import com.vbatecan.patient_management_system.security.JwtService;
 import com.vbatecan.patient_management_system.service.interfaces.UserAccountService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -15,7 +14,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
-import reactor.util.annotation.NonNullApi;
 
 import java.io.IOException;
 import java.util.Optional;
