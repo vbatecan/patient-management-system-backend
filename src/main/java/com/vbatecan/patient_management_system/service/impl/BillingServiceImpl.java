@@ -26,49 +26,47 @@ public class BillingServiceImpl implements BillingService {
 	private final PatientRepository patientRepository;
 	private final AppointmentRepository appointmentRepository;
 
-	// Remove unnecessary comments. AI!
-
 	@Override
 	@Transactional
-	public Billing save(BillingDTO billingDTO) { // Changed return type
+	public Billing save(BillingDTO billingDTO) {
 		Billing billing = convertToEntity(billingDTO);
 		billing.setCreatedAt(LocalDateTime.now());
 		billing.setUpdatedAt(LocalDateTime.now());
 		if ( billingDTO.getStatus() != null ) {
 			billing.setStatus(billingDTO.getStatus());
 		}
-		return billingRepository.save(billing); // Return entity directly
+		return billingRepository.save(billing);
 	}
 
 	@Override
-	public Optional<Billing> findById(Integer id) { // Changed return type
-		return billingRepository.findById(id); // Return Optional<Entity> directly
+	public Optional<Billing> findById(Integer id) {
+		return billingRepository.findById(id);
 	}
 
 	@Override
-	public Page<Billing> findAll(Pageable pageable) { // Changed return type
-		return billingRepository.findAll(pageable); // Return Page<Entity> directly
+	public Page<Billing> findAll(Pageable pageable) {
+		return billingRepository.findAll(pageable);
 	}
 
 	@Override
-	public Page<Billing> findByPatientId(Integer patientId, Pageable pageable) { // Changed return type
+	public Page<Billing> findByPatientId(Integer patientId, Pageable pageable) {
 		if ( !patientRepository.existsById(patientId) ) {
 			throw new ResourceNotFoundException("Patient not found with id: " + patientId);
 		}
-		return billingRepository.findByPatientId(patientId, pageable); // Return Page<Entity> directly
+		return billingRepository.findByPatientId(patientId, pageable);
 	}
 
 	@Override
-	public Page<Billing> findByAppointmentId(Integer appointmentId, Pageable pageable) { // Changed return type
+	public Page<Billing> findByAppointmentId(Integer appointmentId, Pageable pageable) {
 		if ( !appointmentRepository.existsById(appointmentId) ) {
 			throw new ResourceNotFoundException("Appointment not found with id: " + appointmentId);
 		}
-		return billingRepository.findByAppointmentId(appointmentId, pageable); // Return Page<Entity> directly
+		return billingRepository.findByAppointmentId(appointmentId, pageable);
 	}
 
 	@Override
 	@Transactional
-	public Billing update(Integer id, BillingDTO billingDTO) { // Changed return type
+	public Billing update(Integer id, BillingDTO billingDTO) {
 		Billing existingBilling = billingRepository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("Billing not found with id: " + id));
 
@@ -90,17 +88,17 @@ public class BillingServiceImpl implements BillingService {
 		existingBilling.setBillingDate(billingDTO.getBillingDate());
 		existingBilling.setUpdatedAt(LocalDateTime.now());
 
-		return billingRepository.save(existingBilling); // Return entity directly
+		return billingRepository.save(existingBilling);
 	}
 
 	@Override
 	@Transactional
-	public Billing updateBillingStatus(Integer id, String status) { // Changed return type
+	public Billing updateBillingStatus(Integer id, String status) {
 		Billing existingBilling = billingRepository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("Billing not found with id: " + id));
 		existingBilling.setStatus(status);
 		existingBilling.setUpdatedAt(LocalDateTime.now());
-		return billingRepository.save(existingBilling); // Return entity directly
+		return billingRepository.save(existingBilling);
 	}
 
 	@Override
