@@ -2,6 +2,7 @@ package com.vbatecan.patient_management_system.controller;
 
 import com.vbatecan.patient_management_system.model.dto.BillingDTO;
 import com.vbatecan.patient_management_system.model.entities.Billing;
+import com.vbatecan.patient_management_system.model.input.BillingInput;
 import com.vbatecan.patient_management_system.service.interfaces.BillingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -36,9 +37,9 @@ public class BillingController {
 		@ApiResponse(responseCode = "404", description = "Patient or appointment not found")
 	})
 	@PostMapping
-	public ResponseEntity<?> createBilling(@RequestBody BillingDTO billingDTO) {
+	public ResponseEntity<?> createBilling(@RequestBody BillingInput billingInput) {
 		try {
-			Billing savedBilling = billingService.save(billingDTO);
+			Billing savedBilling = billingService.save(billingInput);
 			return new ResponseEntity<>(convertToDTO(savedBilling), HttpStatus.CREATED);
 		} catch (java.lang.IllegalArgumentException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());

@@ -8,15 +8,15 @@ import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 public interface MedicalRecordService {
-	MedicalRecord save(MedicalRecordDTO medicalRecordDTO); // Changed return type
+	MedicalRecord save(MedicalRecordDTO medicalRecordDTO);
 
-	Optional<MedicalRecord> findById(Integer id); // Changed return type
+	Optional<MedicalRecord> findById(Integer id);
 
-	Page<MedicalRecord> findAll(Pageable pageable); // Changed return type
+	Page<MedicalRecord> findAll(Pageable pageable);
 
-	Page<MedicalRecord> findByPatientId(Integer patientId, Pageable pageable); // Changed return type
+	Page<MedicalRecord> findByPatientId(Integer patientId, Pageable pageable);
 
-	MedicalRecord update(Integer id, MedicalRecordDTO medicalRecordDTO); // Changed return type
+	MedicalRecord update(Integer id, MedicalRecordDTO medicalRecordDTO);
 
 	void delete(Integer id);
 }
