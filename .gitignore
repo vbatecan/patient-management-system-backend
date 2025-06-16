@@ -39,3 +39,5 @@ out/
 
 .env
 .aider.tags.cache.v4
+segments_1
+write.lock
