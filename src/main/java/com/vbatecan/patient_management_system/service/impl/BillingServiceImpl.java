@@ -26,6 +26,8 @@ public class BillingServiceImpl implements BillingService {
 	private final PatientRepository patientRepository;
 	private final AppointmentRepository appointmentRepository;
 
+	// Remove unnecessary comments. AI!
+
 	@Override
 	@Transactional
 	public Billing save(BillingDTO billingDTO) { // Changed return type
