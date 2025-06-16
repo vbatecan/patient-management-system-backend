@@ -1,5 +1,7 @@
 package com.vbatecan.patient_management_system.model.input;
 
+import com.vbatecan.patient_management_system.model.dto.PatientDTO;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,8 +16,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class MedicalRecordInput {
 
-	@NotNull(message = "Patient ID cannot be null.")
-	private Integer patientId;
+	@NotNull(message = "Patient cannot be null.")
+	@Valid
+	private PatientDTO patient;
 
 	@NotNull(message = "Record date cannot be null.")
 	@PastOrPresent(message = "Record date must be in the past or present.")

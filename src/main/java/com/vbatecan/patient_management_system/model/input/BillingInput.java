@@ -1,5 +1,8 @@
 package com.vbatecan.patient_management_system.model.input;
 
+import com.vbatecan.patient_management_system.model.dto.AppointmentDTO;
+import com.vbatecan.patient_management_system.model.dto.PatientDTO;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,11 +18,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class BillingInput {
 
-	@NotNull(message = "Patient ID cannot be null.")
-	private Integer patientId;
+	@NotNull(message = "Patient cannot be null.")
+	@Valid
+	private PatientDTO patient;
 
-	@NotNull(message = "Appointment ID cannot be null.")
-	private Integer appointmentId;
+	@NotNull(message = "Appointment cannot be null.")
+	@Valid
+	private AppointmentDTO appointment;
 
 	@NotNull(message = "Amount cannot be null.")
 	@DecimalMin(value = "0.0", inclusive = false, message = "Amount must be greater than zero.")
