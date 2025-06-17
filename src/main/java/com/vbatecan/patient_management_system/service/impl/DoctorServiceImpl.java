@@ -2,7 +2,7 @@ package com.vbatecan.patient_management_system.service.impl;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vbatecan.patient_management_system.enums.Role;
+import com.vbatecan.patient_management_system.model.enums.Role;
 import com.vbatecan.patient_management_system.exception.ResourceNotFoundException;
 import com.vbatecan.patient_management_system.model.dto.DoctorDTO;
 import com.vbatecan.patient_management_system.model.entities.Doctor;
