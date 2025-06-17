@@ -1,6 +1,6 @@
 package com.vbatecan.patient_management_system.model.entities;
 
-import com.vbatecan.patient_management_system.enums.Role;
+import com.vbatecan.patient_management_system.model.enums.Role;
 import com.vbatecan.patient_management_system.model.dto.UserAccountDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

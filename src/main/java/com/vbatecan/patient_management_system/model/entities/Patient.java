@@ -1,6 +1,6 @@
 package com.vbatecan.patient_management_system.model.entities;
 
-import com.vbatecan.patient_management_system.enums.Gender;
+import com.vbatecan.patient_management_system.model.enums.Gender;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

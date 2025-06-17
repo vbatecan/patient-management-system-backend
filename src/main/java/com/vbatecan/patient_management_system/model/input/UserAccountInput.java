@@ -1,6 +1,6 @@
 package com.vbatecan.patient_management_system.model.input;
 
-import com.vbatecan.patient_management_system.enums.Role;
+import com.vbatecan.patient_management_system.model.enums.Role;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
